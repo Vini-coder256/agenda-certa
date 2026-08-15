@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as PainelAgendaRouteImport } from './routes/painel.agenda'
+import { Route as PainelAssinaturaRouteImport } from './routes/painel.assinatura'
 import { Route as PainelConfiguracoesRouteImport } from './routes/painel.configuracoes'
 import { Route as PainelNovoAgendamentoRouteImport } from './routes/painel.novo-agendamento'
 import { Route as PainelProfissionaisRouteImport } from './routes/painel.profissionais'
@@ -36,6 +37,11 @@ const PainelIndexRoute = PainelIndexRouteImport.update({
 const PainelAgendaRoute = PainelAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelAssinaturaRoute = PainelAssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
   getParentRoute: () => PainelRoute,
 } as any)
 const PainelConfiguracoesRoute = PainelConfiguracoesRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
   '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
   '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
   '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/'
     | '/painel'
     | '/painel/agenda'
+    | '/painel/assinatura'
     | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/painel/agenda'
+    | '/painel/assinatura'
     | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/painel'
     | '/painel/agenda'
+    | '/painel/assinatura'
     | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
@@ -156,6 +168,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelAgendaRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/painel/assinatura': {
+      id: '/painel/assinatura'
+      path: '/assinatura'
+      fullPath: '/painel/assinatura'
+      preLoaderRoute: typeof PainelAssinaturaRouteImport
+      parentRoute: typeof PainelRoute
+    }
     '/painel/configuracoes': {
       id: '/painel/configuracoes'
       path: '/configuracoes'
@@ -189,6 +208,7 @@ declare module '@tanstack/react-router' {
 
 interface PainelRouteChildren {
   PainelAgendaRoute: typeof PainelAgendaRoute
+  PainelAssinaturaRoute: typeof PainelAssinaturaRoute
   PainelConfiguracoesRoute: typeof PainelConfiguracoesRoute
   PainelNovoAgendamentoRoute: typeof PainelNovoAgendamentoRoute
   PainelProfissionaisRoute: typeof PainelProfissionaisRoute
@@ -198,6 +218,7 @@ interface PainelRouteChildren {
 
 const PainelRouteChildren: PainelRouteChildren = {
   PainelAgendaRoute: PainelAgendaRoute,
+  PainelAssinaturaRoute: PainelAssinaturaRoute,
   PainelConfiguracoesRoute: PainelConfiguracoesRoute,
   PainelNovoAgendamentoRoute: PainelNovoAgendamentoRoute,
   PainelProfissionaisRoute: PainelProfissionaisRoute,
