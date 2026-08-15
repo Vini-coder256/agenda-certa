@@ -14,6 +14,7 @@ import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as PainelAgendaRouteImport } from './routes/painel.agenda'
 import { Route as PainelNovoAgendamentoRouteImport } from './routes/painel.novo-agendamento'
+import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,18 +41,25 @@ const PainelNovoAgendamentoRoute = PainelNovoAgendamentoRouteImport.update({
   path: '/novo-agendamento',
   getParentRoute: () => PainelRoute,
 } as any)
+const PainelServicosRoute = PainelServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => PainelRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/servicos': typeof PainelServicosRoute
   '/painel/': typeof PainelIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/painel/agenda': typeof PainelAgendaRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/servicos': typeof PainelServicosRoute
   '/painel': typeof PainelIndexRoute
 }
 export interface FileRoutesById {
@@ -60,20 +68,32 @@ export interface FileRoutesById {
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/servicos': typeof PainelServicosRoute
   '/painel/': typeof PainelIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/painel' | '/painel/agenda' | '/painel/novo-agendamento' | '/painel/'
+    | '/'
+    | '/painel'
+    | '/painel/agenda'
+    | '/painel/novo-agendamento'
+    | '/painel/servicos'
+    | '/painel/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/painel/agenda' | '/painel/novo-agendamento' | '/painel'
+  to:
+    | '/'
+    | '/painel/agenda'
+    | '/painel/novo-agendamento'
+    | '/painel/servicos'
+    | '/painel'
   id:
     | '__root__'
     | '/'
     | '/painel'
     | '/painel/agenda'
     | '/painel/novo-agendamento'
+    | '/painel/servicos'
     | '/painel/'
   fileRoutesById: FileRoutesById
 }
@@ -119,18 +139,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelNovoAgendamentoRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/painel/servicos': {
+      id: '/painel/servicos'
+      path: '/servicos'
+      fullPath: '/painel/servicos'
+      preLoaderRoute: typeof PainelServicosRouteImport
+      parentRoute: typeof PainelRoute
+    }
   }
 }
 
 interface PainelRouteChildren {
   PainelAgendaRoute: typeof PainelAgendaRoute
   PainelNovoAgendamentoRoute: typeof PainelNovoAgendamentoRoute
+  PainelServicosRoute: typeof PainelServicosRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
 
 const PainelRouteChildren: PainelRouteChildren = {
   PainelAgendaRoute: PainelAgendaRoute,
   PainelNovoAgendamentoRoute: PainelNovoAgendamentoRoute,
+  PainelServicosRoute: PainelServicosRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
 
