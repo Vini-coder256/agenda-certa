@@ -26,7 +26,7 @@ const nav = [
   { to: "/painel/assinatura", label: "Assinatura", icon: CreditCard },
 ] as const;
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
   return (
     <nav className="flex flex-col gap-1">
       {nav.map((item) => (
@@ -49,7 +49,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
   return (
     <div className="flex h-full flex-col gap-6 bg-sidebar p-4">
       <div className="flex min-w-0 items-center gap-3 px-1 pt-1">
