@@ -10,33 +10,145 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PainelRouteImport } from './routes/painel'
+import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as PainelIndexRouteImport } from './routes/painel.index'
+import { Route as PainelAgendaRouteImport } from './routes/painel.agenda'
+import { Route as PainelAssinaturaRouteImport } from './routes/painel.assinatura'
+import { Route as PainelConfiguracoesRouteImport } from './routes/painel.configuracoes'
+import { Route as PainelNovoAgendamentoRouteImport } from './routes/painel.novo-agendamento'
+import { Route as PainelProfissionaisRouteImport } from './routes/painel.profissionais'
+import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BSlugRoute = BSlugRouteImport.update({
+  id: '/b/$slug',
+  path: '/b/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainelIndexRoute = PainelIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelAgendaRoute = PainelAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelAssinaturaRoute = PainelAssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelConfiguracoesRoute = PainelConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelNovoAgendamentoRoute = PainelNovoAgendamentoRouteImport.update({
+  id: '/novo-agendamento',
+  path: '/novo-agendamento',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelProfissionaisRoute = PainelProfissionaisRouteImport.update({
+  id: '/profissionais',
+  path: '/profissionais',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelServicosRoute = PainelServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => PainelRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/painel': typeof PainelRouteWithChildren
+  '/b/$slug': typeof BSlugRoute
+  '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
+  '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/profissionais': typeof PainelProfissionaisRoute
+  '/painel/servicos': typeof PainelServicosRoute
+  '/painel/': typeof PainelIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/b/$slug': typeof BSlugRoute
+  '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
+  '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/profissionais': typeof PainelProfissionaisRoute
+  '/painel/servicos': typeof PainelServicosRoute
+  '/painel': typeof PainelIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/painel': typeof PainelRouteWithChildren
+  '/b/$slug': typeof BSlugRoute
+  '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/assinatura': typeof PainelAssinaturaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
+  '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
+  '/painel/profissionais': typeof PainelProfissionaisRoute
+  '/painel/servicos': typeof PainelServicosRoute
+  '/painel/': typeof PainelIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/painel'
+    | '/b/$slug'
+    | '/painel/agenda'
+    | '/painel/assinatura'
+    | '/painel/configuracoes'
+    | '/painel/novo-agendamento'
+    | '/painel/profissionais'
+    | '/painel/servicos'
+    | '/painel/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/b/$slug'
+    | '/painel/agenda'
+    | '/painel/assinatura'
+    | '/painel/configuracoes'
+    | '/painel/novo-agendamento'
+    | '/painel/profissionais'
+    | '/painel/servicos'
+    | '/painel'
+  id:
+    | '__root__'
+    | '/'
+    | '/painel'
+    | '/b/$slug'
+    | '/painel/agenda'
+    | '/painel/assinatura'
+    | '/painel/configuracoes'
+    | '/painel/novo-agendamento'
+    | '/painel/profissionais'
+    | '/painel/servicos'
+    | '/painel/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PainelRoute: typeof PainelRouteWithChildren
+  BSlugRoute: typeof BSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +160,99 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/b/$slug': {
+      id: '/b/$slug'
+      path: '/b/$slug'
+      fullPath: '/b/$slug'
+      preLoaderRoute: typeof BSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel/': {
+      id: '/painel/'
+      path: '/'
+      fullPath: '/painel/'
+      preLoaderRoute: typeof PainelIndexRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/agenda': {
+      id: '/painel/agenda'
+      path: '/agenda'
+      fullPath: '/painel/agenda'
+      preLoaderRoute: typeof PainelAgendaRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/assinatura': {
+      id: '/painel/assinatura'
+      path: '/assinatura'
+      fullPath: '/painel/assinatura'
+      preLoaderRoute: typeof PainelAssinaturaRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/configuracoes': {
+      id: '/painel/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/painel/configuracoes'
+      preLoaderRoute: typeof PainelConfiguracoesRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/novo-agendamento': {
+      id: '/painel/novo-agendamento'
+      path: '/novo-agendamento'
+      fullPath: '/painel/novo-agendamento'
+      preLoaderRoute: typeof PainelNovoAgendamentoRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/profissionais': {
+      id: '/painel/profissionais'
+      path: '/profissionais'
+      fullPath: '/painel/profissionais'
+      preLoaderRoute: typeof PainelProfissionaisRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/servicos': {
+      id: '/painel/servicos'
+      path: '/servicos'
+      fullPath: '/painel/servicos'
+      preLoaderRoute: typeof PainelServicosRouteImport
+      parentRoute: typeof PainelRoute
+    }
   }
 }
 
+interface PainelRouteChildren {
+  PainelAgendaRoute: typeof PainelAgendaRoute
+  PainelAssinaturaRoute: typeof PainelAssinaturaRoute
+  PainelConfiguracoesRoute: typeof PainelConfiguracoesRoute
+  PainelNovoAgendamentoRoute: typeof PainelNovoAgendamentoRoute
+  PainelProfissionaisRoute: typeof PainelProfissionaisRoute
+  PainelServicosRoute: typeof PainelServicosRoute
+  PainelIndexRoute: typeof PainelIndexRoute
+}
+
+const PainelRouteChildren: PainelRouteChildren = {
+  PainelAgendaRoute: PainelAgendaRoute,
+  PainelAssinaturaRoute: PainelAssinaturaRoute,
+  PainelConfiguracoesRoute: PainelConfiguracoesRoute,
+  PainelNovoAgendamentoRoute: PainelNovoAgendamentoRoute,
+  PainelProfissionaisRoute: PainelProfissionaisRoute,
+  PainelServicosRoute: PainelServicosRoute,
+  PainelIndexRoute: PainelIndexRoute,
+}
+
+const PainelRouteWithChildren =
+  PainelRoute._addFileChildren(PainelRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PainelRoute: PainelRouteWithChildren,
+  BSlugRoute: BSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
