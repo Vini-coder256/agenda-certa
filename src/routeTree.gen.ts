@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
+import { Route as PainelAgendaRouteImport } from './routes/painel.agenda'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,28 +29,36 @@ const PainelIndexRoute = PainelIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PainelRoute,
 } as any)
+const PainelAgendaRoute = PainelAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => PainelRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
+  '/painel/agenda': typeof PainelAgendaRoute
   '/painel/': typeof PainelIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/painel/agenda': typeof PainelAgendaRoute
   '/painel': typeof PainelIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
+  '/painel/agenda': typeof PainelAgendaRoute
   '/painel/': typeof PainelIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/painel' | '/painel/'
+  fullPaths: '/' | '/painel' | '/painel/agenda' | '/painel/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/painel'
-  id: '__root__' | '/' | '/painel' | '/painel/'
+  to: '/' | '/painel/agenda' | '/painel'
+  id: '__root__' | '/' | '/painel' | '/painel/agenda' | '/painel/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -80,14 +89,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelIndexRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/painel/agenda': {
+      id: '/painel/agenda'
+      path: '/agenda'
+      fullPath: '/painel/agenda'
+      preLoaderRoute: typeof PainelAgendaRouteImport
+      parentRoute: typeof PainelRoute
+    }
   }
 }
 
 interface PainelRouteChildren {
+  PainelAgendaRoute: typeof PainelAgendaRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
 
 const PainelRouteChildren: PainelRouteChildren = {
+  PainelAgendaRoute: PainelAgendaRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
 
