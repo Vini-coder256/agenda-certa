@@ -84,7 +84,7 @@ function Dashboard() {
 
   return (
     <PainelShell
-      title="Bom dia, Zé 👋"
+      title="Bom dia, Zé!"
       subtitle="Sábado, 15 de agosto · veja como está o seu dia"
       action={
         <Link to="/painel/novo-agendamento">
