@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as PainelAgendaRouteImport } from './routes/painel.agenda'
+import { Route as PainelConfiguracoesRouteImport } from './routes/painel.configuracoes'
 import { Route as PainelNovoAgendamentoRouteImport } from './routes/painel.novo-agendamento'
 import { Route as PainelProfissionaisRouteImport } from './routes/painel.profissionais'
 import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
@@ -37,6 +38,11 @@ const PainelAgendaRoute = PainelAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => PainelRoute,
 } as any)
+const PainelConfiguracoesRoute = PainelConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => PainelRoute,
+} as any)
 const PainelNovoAgendamentoRoute = PainelNovoAgendamentoRouteImport.update({
   id: '/novo-agendamento',
   path: '/novo-agendamento',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/painel': typeof PainelRouteWithChildren
   '/painel/agenda': typeof PainelAgendaRoute
+  '/painel/configuracoes': typeof PainelConfiguracoesRoute
   '/painel/novo-agendamento': typeof PainelNovoAgendamentoRoute
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
     | '/'
     | '/painel'
     | '/painel/agenda'
+    | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
     | '/painel/servicos'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/painel/agenda'
+    | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
     | '/painel/servicos'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/painel'
     | '/painel/agenda'
+    | '/painel/configuracoes'
     | '/painel/novo-agendamento'
     | '/painel/profissionais'
     | '/painel/servicos'
@@ -144,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelAgendaRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/painel/configuracoes': {
+      id: '/painel/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/painel/configuracoes'
+      preLoaderRoute: typeof PainelConfiguracoesRouteImport
+      parentRoute: typeof PainelRoute
+    }
     '/painel/novo-agendamento': {
       id: '/painel/novo-agendamento'
       path: '/novo-agendamento'
@@ -170,6 +189,7 @@ declare module '@tanstack/react-router' {
 
 interface PainelRouteChildren {
   PainelAgendaRoute: typeof PainelAgendaRoute
+  PainelConfiguracoesRoute: typeof PainelConfiguracoesRoute
   PainelNovoAgendamentoRoute: typeof PainelNovoAgendamentoRoute
   PainelProfissionaisRoute: typeof PainelProfissionaisRoute
   PainelServicosRoute: typeof PainelServicosRoute
@@ -178,6 +198,7 @@ interface PainelRouteChildren {
 
 const PainelRouteChildren: PainelRouteChildren = {
   PainelAgendaRoute: PainelAgendaRoute,
+  PainelConfiguracoesRoute: PainelConfiguracoesRoute,
   PainelNovoAgendamentoRoute: PainelNovoAgendamentoRoute,
   PainelProfissionaisRoute: PainelProfissionaisRoute,
   PainelServicosRoute: PainelServicosRoute,
