@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
@@ -23,6 +24,11 @@ import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainelRoute = PainelRouteImport.update({
@@ -73,6 +79,7 @@ const PainelServicosRoute = PainelServicosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/painel': typeof PainelRouteWithChildren
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
   '/painel/assinatura': typeof PainelAssinaturaRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/painel': typeof PainelRouteWithChildren
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cadastro'
     | '/painel'
     | '/b/$slug'
     | '/painel/agenda'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cadastro'
     | '/b/$slug'
     | '/painel/agenda'
     | '/painel/assinatura'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/cadastro'
     | '/painel'
     | '/b/$slug'
     | '/painel/agenda'
@@ -147,6 +159,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CadastroRoute: typeof CadastroRoute
   PainelRoute: typeof PainelRouteWithChildren
   BSlugRoute: typeof BSlugRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel': {
@@ -251,6 +271,7 @@ const PainelRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CadastroRoute: CadastroRoute,
   PainelRoute: PainelRouteWithChildren,
   BSlugRoute: BSlugRoute,
 }
