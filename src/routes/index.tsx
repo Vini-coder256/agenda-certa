@@ -65,19 +65,20 @@ function Home() {
       <header className="gradient-hero px-4 py-16 text-primary-foreground sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <span className="inline-flex items-center rounded-full bg-primary-foreground/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-            Protótipo navegável · dados fictícios
+            Agenda Certa · protótipo navegável
           </span>
           <h1 className="mt-5 text-4xl font-bold sm:text-5xl">
-            A agenda do seu negócio, sem complicação
+            Agenda Certa: a agenda do seu negócio, sem complicação
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base opacity-90">
-            Para barbearias, manicures, salões, estética, personal trainers e professores
-            particulares. Você cadastra seus serviços e recebe agendamentos por um link só seu.
+            Uma plataforma só para quem atende por hora marcada: barbearias, manicures, salões,
+            estética, personal trainers e professores particulares. Você cria sua conta, cadastra o
+            seu negócio e recebe agendamentos por um link só seu.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/painel">
+            <Link to="/cadastro">
               <Button size="lg" variant="secondary">
-                Ver painel do empreendedor
+                Começar grátis
               </Button>
             </Link>
             <Link to="/b/$slug" params={{ slug: business.slug }}>
@@ -86,10 +87,29 @@ function Home() {
                 variant="outline"
                 className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
               >
-                Ver página do cliente
+                Ver demonstração do cliente
+              </Button>
+            </Link>
+            <Link to="/painel" search={{ demo: true }}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                Ver demonstração do empreendedor
               </Button>
             </Link>
           </div>
+          <p className="mx-auto mt-5 max-w-xl text-xs opacity-80">
+            A Barbearia do Zé é apenas um negócio de demonstração. Ao criar sua conta você cadastra o
+            seu próprio negócio, com seus serviços, horários e link público.
+          </p>
+          <p className="mt-3 text-xs opacity-80">
+            Já tem conta?{" "}
+            <Link to="/entrar" className="font-semibold underline">
+              Entrar
+            </Link>
+          </p>
         </div>
       </header>
 
@@ -109,7 +129,7 @@ function Home() {
 
         <div className="surface-card mt-10 p-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Exemplo de negócio cadastrado nesta demonstração
+            Negócio fictício usado apenas como demonstração
           </p>
           <p className="mt-1 font-display text-xl font-bold">{business.name}</p>
           <p className="mt-1 font-mono text-xs text-muted-foreground">

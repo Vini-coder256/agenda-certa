@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as EntrarRouteImport } from './routes/entrar'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as BSlugRouteImport } from './routes/b.$slug'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
@@ -23,6 +26,21 @@ import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainelRoute = PainelRouteImport.update({
@@ -73,6 +91,9 @@ const PainelServicosRoute = PainelServicosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/entrar': typeof EntrarRoute
+  '/onboarding': typeof OnboardingRoute
   '/painel': typeof PainelRouteWithChildren
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
@@ -85,6 +106,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/entrar': typeof EntrarRoute
+  '/onboarding': typeof OnboardingRoute
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
   '/painel/assinatura': typeof PainelAssinaturaRoute
@@ -97,6 +121,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/entrar': typeof EntrarRoute
+  '/onboarding': typeof OnboardingRoute
   '/painel': typeof PainelRouteWithChildren
   '/b/$slug': typeof BSlugRoute
   '/painel/agenda': typeof PainelAgendaRoute
@@ -111,6 +138,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cadastro'
+    | '/entrar'
+    | '/onboarding'
     | '/painel'
     | '/b/$slug'
     | '/painel/agenda'
@@ -123,6 +153,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cadastro'
+    | '/entrar'
+    | '/onboarding'
     | '/b/$slug'
     | '/painel/agenda'
     | '/painel/assinatura'
@@ -134,6 +167,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/cadastro'
+    | '/entrar'
+    | '/onboarding'
     | '/painel'
     | '/b/$slug'
     | '/painel/agenda'
@@ -147,6 +183,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CadastroRoute: typeof CadastroRoute
+  EntrarRoute: typeof EntrarRoute
+  OnboardingRoute: typeof OnboardingRoute
   PainelRoute: typeof PainelRouteWithChildren
   BSlugRoute: typeof BSlugRoute
 }
@@ -158,6 +197,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel': {
@@ -251,6 +311,9 @@ const PainelRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CadastroRoute: CadastroRoute,
+  EntrarRoute: EntrarRoute,
+  OnboardingRoute: OnboardingRoute,
   PainelRoute: PainelRouteWithChildren,
   BSlugRoute: BSlugRoute,
 }
