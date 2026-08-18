@@ -48,10 +48,16 @@ export const Route = createFileRoute("/b/$slug")({
 type Step = 1 | 2 | 3 | 4 | 5;
 
 function PublicBooking() {
-  const multiPro = activeProfessionals.length > 1;
   const [step, setStep] = useState<Step>(1);
   const [service, setService] = useState<Service | null>(null);
-  const [pro, setPro] = useState<Professional | null>(multiPro ? null : activeProfessionals[0]!);
+  const [pro, setPro] = useState<Professional | null>(null);
+
+  /** Profissionais ativos que realizam o serviço escolhido. */
+  const eligiblePros = service
+    ? activeProfessionals.filter((p) => p.serviceIds.includes(service.id))
+    : activeProfessionals;
+  /** Só mostra a escolha de profissional quando há 2 ou mais aptos ao serviço. */
+  const multiPro = eligiblePros.length > 1;
   const [day, setDay] = useState(nextDays[0]!);
   const [time, setTime] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", whatsapp: "", note: "" });
@@ -64,7 +70,6 @@ function PublicBooking() {
 
   const slots = pro ? availabilityByProfessional[pro.id] ?? {} : {};
   const freeSlots = Object.entries(slots).filter(([, free]) => free);
-  const busySlots = Object.entries(slots).filter(([, free]) => !free);
 
   const goto = (s: Step) => setStep(s);
 
@@ -126,10 +131,11 @@ function PublicBooking() {
               <button
                 key={s.id}
                 onClick={() => {
+                  const apt = activeProfessionals.filter((p) => p.serviceIds.includes(s.id));
                   setService(s);
-                  setPro(multiPro ? null : activeProfessionals[0]!);
+                  setPro(apt.length > 1 ? null : (apt[0] ?? null));
                   setTime(null);
-                  goto(multiPro ? 2 : 3);
+                  goto(apt.length > 1 ? 2 : 3);
                 }}
                 className="surface-card grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-5 text-left transition-shadow hover:shadow-lift"
               >
@@ -154,9 +160,7 @@ function PublicBooking() {
             <p className="text-sm text-muted-foreground">
               Os horários mudam conforme a agenda de cada profissional.
             </p>
-            {activeProfessionals
-              .filter((p) => !service || p.serviceIds.includes(service.id))
-              .map((p) => (
+            {eligiblePros.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => {
@@ -224,19 +228,10 @@ function PublicBooking() {
                 ))}
               </div>
 
-              <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Já ocupados (indisponíveis)
+              <p className="mt-4 text-xs text-muted-foreground">
+                Só aparecem os horários realmente livres. Intervalos e horários já ocupados não são
+                exibidos.
               </p>
-              <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
-                {busySlots.map(([h]) => (
-                  <span
-                    key={h}
-                    className="cursor-not-allowed rounded-lg border border-dashed bg-muted py-2.5 text-center text-sm text-muted-foreground line-through"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
