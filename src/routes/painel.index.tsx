@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { PainelShell } from "@/components/painel/painel-shell";
+import { EmptyStateChecklist } from "@/components/painel/empty-state-checklist";
 import { OriginBadge, StatusBadge } from "@/components/painel/status-badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +22,12 @@ import {
   todaySummary,
   trial,
 } from "@/lib/mock";
+import { useSetup } from "@/lib/setup";
 
 export const Route = createFileRoute("/painel/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    demo: search["demo"] === "1" || search["demo"] === true,
+  }),
   head: () => ({
     meta: [
       { title: "Dashboard do dia | Agenda Certa" },
@@ -80,11 +85,29 @@ const metrics = [
 ];
 
 function Dashboard() {
+  const { demo } = Route.useSearch();
+  const { ready, setup } = useSetup();
   const upcoming = appointments.filter((a) => a.status === "agendado");
+
+  if (ready && !setup && !demo) {
+    return (
+      <PainelShell
+        title="Bem-vindo ao Agenda Certa!"
+        subtitle="Faltam poucos passos para você receber o primeiro agendamento"
+        action={
+          <Link to="/onboarding">
+            <Button>Configurar negócio</Button>
+          </Link>
+        }
+      >
+        <EmptyStateChecklist />
+      </PainelShell>
+    );
+  }
 
   return (
     <PainelShell
-      title="Bom dia, Zé!"
+      title={setup ? `Bem-vindo, ${setup.name}!` : "Bom dia, Zé!"}
       subtitle="Sábado, 15 de agosto · veja como está o seu dia"
       action={
         <Link to="/painel/novo-agendamento">
@@ -92,6 +115,12 @@ function Dashboard() {
         </Link>
       }
     >
+      <div className="rounded-xl border border-info/40 bg-info-soft p-4 text-sm text-info">
+        {setup
+          ? `Seu negócio ${setup.name} foi criado. Os números abaixo são um exemplo de como o painel fica com a agenda cheia.`
+          : "Você está vendo a demonstração da Barbearia do Zé, um negócio fictício para você conhecer o painel."}
+      </div>
+
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {metrics.map((m) => (
           <div key={m.label} className="surface-card p-4">
