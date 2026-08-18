@@ -25,9 +25,9 @@ import {
 import { useSetup } from "@/lib/setup";
 
 export const Route = createFileRoute("/painel/")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    demo: search["demo"] === "1" || search["demo"] === true,
-  }),
+  validateSearch: (search: Record<string, unknown>): { demo?: boolean } =>
+    search["demo"] === "1" || search["demo"] === true ? { demo: true } : {},
+
   head: () => ({
     meta: [
       { title: "Dashboard do dia | Agenda Certa" },
