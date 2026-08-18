@@ -393,15 +393,16 @@ function PublicBooking() {
                   setStep(1);
                   setService(null);
                   setTime(null);
-                  setPro(multiPro ? null : activeProfessionals[0]!);
+                  setPro(null);
                   setForm({ name: "", whatsapp: "", note: "" });
                 }}
               >
                 Fazer outro agendamento
               </Button>
-              <Link to="/painel">
+              <Link to="/painel" search={{ demo: true }}>
                 <Button variant="ghost">Ver o painel do dono</Button>
               </Link>
+
             </div>
           </section>
         )}
