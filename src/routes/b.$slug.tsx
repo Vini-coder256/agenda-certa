@@ -93,8 +93,16 @@ function PublicBooking() {
               <CalendarDays className="size-3.5 shrink-0" /> Seg a sáb
             </span>
           </div>
+          <Link
+            to="/b/$slug/gerenciar"
+            params={{ slug }}
+            className="mt-4 inline-block text-xs font-medium underline underline-offset-4 opacity-85 hover:opacity-100"
+          >
+            Já tenho um agendamento
+          </Link>
         </div>
       </header>
+
 
       <main className="mx-auto -mt-8 w-full max-w-3xl px-4 pb-16 sm:px-6">
         {step < 5 && (
