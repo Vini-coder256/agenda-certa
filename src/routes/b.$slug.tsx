@@ -48,9 +48,12 @@ export const Route = createFileRoute("/b/$slug")({
 type Step = 1 | 2 | 3 | 4 | 5;
 
 function PublicBooking() {
+  const { slug } = Route.useParams();
   const [step, setStep] = useState<Step>(1);
   const [service, setService] = useState<Service | null>(null);
   const [pro, setPro] = useState<Professional | null>(null);
+  const [bookingCode, setBookingCode] = useState(demoBooking.code);
+
 
   /** Profissionais ativos que realizam o serviço escolhido. */
   const eligiblePros = service
