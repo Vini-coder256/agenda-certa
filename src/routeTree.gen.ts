@@ -22,6 +22,7 @@ import { Route as PainelConfiguracoesRouteImport } from './routes/painel.configu
 import { Route as PainelNovoAgendamentoRouteImport } from './routes/painel.novo-agendamento'
 import { Route as PainelProfissionaisRouteImport } from './routes/painel.profissionais'
 import { Route as PainelServicosRouteImport } from './routes/painel.servicos'
+import { Route as BSlugGerenciarRouteImport } from './routes/b_.$slug.gerenciar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,11 @@ const PainelServicosRoute = PainelServicosRouteImport.update({
   path: '/servicos',
   getParentRoute: () => PainelRoute,
 } as any)
+const BSlugGerenciarRoute = BSlugGerenciarRouteImport.update({
+  id: '/b_/$slug/gerenciar',
+  path: '/b/$slug/gerenciar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
   '/painel/': typeof PainelIndexRoute
+  '/b/$slug/gerenciar': typeof BSlugGerenciarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
   '/painel': typeof PainelIndexRoute
+  '/b/$slug/gerenciar': typeof BSlugGerenciarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/painel/profissionais': typeof PainelProfissionaisRoute
   '/painel/servicos': typeof PainelServicosRoute
   '/painel/': typeof PainelIndexRoute
+  '/b_/$slug/gerenciar': typeof BSlugGerenciarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/painel/profissionais'
     | '/painel/servicos'
     | '/painel/'
+    | '/b/$slug/gerenciar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/painel/profissionais'
     | '/painel/servicos'
     | '/painel'
+    | '/b/$slug/gerenciar'
   id:
     | '__root__'
     | '/'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/painel/profissionais'
     | '/painel/servicos'
     | '/painel/'
+    | '/b_/$slug/gerenciar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PainelRoute: typeof PainelRouteWithChildren
   BSlugRoute: typeof BSlugRoute
+  BSlugGerenciarRoute: typeof BSlugGerenciarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelServicosRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/b_/$slug/gerenciar': {
+      id: '/b_/$slug/gerenciar'
+      path: '/b/$slug/gerenciar'
+      fullPath: '/b/$slug/gerenciar'
+      preLoaderRoute: typeof BSlugGerenciarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -316,6 +336,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PainelRoute: PainelRouteWithChildren,
   BSlugRoute: BSlugRoute,
+  BSlugGerenciarRoute: BSlugGerenciarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
