@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { demoBooking, generateBookingCode } from "@/lib/booking";
 import {
   activeProfessionals,
   activeServices,
@@ -48,9 +49,12 @@ export const Route = createFileRoute("/b/$slug")({
 type Step = 1 | 2 | 3 | 4 | 5;
 
 function PublicBooking() {
+  const { slug } = Route.useParams();
   const [step, setStep] = useState<Step>(1);
   const [service, setService] = useState<Service | null>(null);
   const [pro, setPro] = useState<Professional | null>(null);
+  const [bookingCode, setBookingCode] = useState(demoBooking.code);
+
 
   /** Profissionais ativos que realizam o serviço escolhido. */
   const eligiblePros = service
@@ -93,8 +97,16 @@ function PublicBooking() {
               <CalendarDays className="size-3.5 shrink-0" /> Seg a sáb
             </span>
           </div>
+          <Link
+            to="/b/$slug/gerenciar"
+            params={{ slug }}
+            className="mt-4 inline-block text-xs font-medium underline underline-offset-4 opacity-85 hover:opacity-100"
+          >
+            Já tenho um agendamento
+          </Link>
         </div>
       </header>
+
 
       <main className="mx-auto -mt-8 w-full max-w-3xl px-4 pb-16 sm:px-6">
         {step < 5 && (
@@ -328,7 +340,13 @@ function PublicBooking() {
               <Button variant="ghost" onClick={() => goto(3)}>
                 <ArrowLeft className="mr-1 size-4" /> Voltar
               </Button>
-              <Button disabled={!form.name || !form.whatsapp} onClick={() => goto(5)}>
+              <Button
+                disabled={!form.name || !form.whatsapp}
+                onClick={() => {
+                  setBookingCode(generateBookingCode());
+                  goto(5);
+                }}
+              >
                 Confirmar agendamento
               </Button>
             </div>
@@ -340,19 +358,15 @@ function PublicBooking() {
             <span className="mx-auto grid size-14 place-items-center rounded-full bg-success-soft text-success">
               <CheckCircle2 className="size-7" />
             </span>
-            <h2 className="mt-4 text-xl font-bold">Agendamento confirmado com sucesso.</h2>
+            <h2 className="mt-4 text-xl font-bold">Agendamento confirmado</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Anote o horário — te esperamos na {business.name}.
+              Te esperamos na {business.name}.
             </p>
 
             <dl className="mx-auto mt-6 max-w-sm space-y-2 rounded-xl bg-muted p-4 text-left text-sm">
               <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Cliente</dt>
-                <dd className="text-right font-medium">{form.name}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">WhatsApp</dt>
-                <dd className="font-medium">{form.whatsapp}</dd>
+                <dt className="text-muted-foreground">Negócio</dt>
+                <dd className="text-right font-medium">{business.name}</dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-muted-foreground">Serviço</dt>
@@ -365,14 +379,30 @@ function PublicBooking() {
                 </div>
               )}
               <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Data e horário</dt>
-                <dd className="font-medium">
-                  {day.day}/{day.month} às {time}
+                <dt className="text-muted-foreground">Data</dt>
+                <dd className="text-right font-medium">
+                  {day.label} · {day.day}/{day.month}
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-muted-foreground">Valor</dt>
+                <dt className="text-muted-foreground">Horário</dt>
+                <dd className="font-medium">{time}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted-foreground">Duração</dt>
+                <dd className="font-medium">{service?.durationMin} min</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted-foreground">Preço</dt>
                 <dd className="font-medium">{service ? brl(service.price) : "—"}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted-foreground">Cliente</dt>
+                <dd className="text-right font-medium">{form.name}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted-foreground">WhatsApp</dt>
+                <dd className="font-medium">{form.whatsapp}</dd>
               </div>
               {form.note && (
                 <div className="border-t pt-2">
@@ -382,11 +412,27 @@ function PublicBooking() {
               )}
             </dl>
 
-            <p className="mt-4 text-xs text-muted-foreground">
-              Tolerância de {business.toleranceMin} minutos de atraso. {business.address}
-            </p>
+            <div className="mx-auto mt-4 flex max-w-sm items-start gap-2 rounded-xl border border-warning/50 bg-warning-soft p-4 text-left text-sm text-warning-foreground">
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
+              <p>
+                Tolerância de {business.toleranceMin} minutos de atraso. Após esse prazo, seu horário
+                poderá ser liberado para outro cliente.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-4 max-w-sm rounded-xl border border-primary/40 bg-primary-soft p-4">
+              <p className="text-sm text-primary">Código do agendamento</p>
+              <p className="font-display text-2xl font-bold text-primary">{bookingCode}</p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Guarde este código. Ele serve para cancelar ou remarcar seu horário dentro da página
+                deste negócio.
+              </p>
+            </div>
 
             <div className="mt-6 flex flex-wrap justify-center gap-2">
+              <Link to="/b/$slug/gerenciar" params={{ slug }}>
+                <Button>Gerenciar meu agendamento</Button>
+              </Link>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -397,15 +443,12 @@ function PublicBooking() {
                   setForm({ name: "", whatsapp: "", note: "" });
                 }}
               >
-                Fazer outro agendamento
+                Voltar para a página do negócio
               </Button>
-              <Link to="/painel" search={{ demo: true }}>
-                <Button variant="ghost">Ver o painel do dono</Button>
-              </Link>
-
             </div>
           </section>
         )}
+
       </main>
     </div>
   );
