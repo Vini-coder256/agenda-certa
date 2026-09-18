@@ -1,295 +1,74 @@
-# Time Perfected
+# Agenda Certa
 
-Crie o protótipo visual de um Micro SaaS de agendamentos para microempreendedores que trabalham com horário marcado, como barbearias, manicures, salões de beleza, estética, personal trainers e professores particulares.
+Micro SaaS de agendamentos para microempreendedores e pequenos negócios que trabalham com horário marcado.
 
-O sistema deve ser uma plataforma única, onde vários empreendedores podem criar suas contas e cadastrar seus próprios negócios. Cada negócio deve ter um link público próprio para os clientes agendarem horários.
+## Objetivo
 
-IMPORTANTE: neste primeiro momento, crie apenas um protótipo visual navegável com dados fictícios. Não conecte Supabase ainda. Não implemente pagamento real. Não use API externa. Foque em design, fluxo e telas.
+O Agenda Certa permite que cada empreendedor configure seu negócio, serviços, profissionais e períodos de atendimento e divulgue um link público próprio para receber agendamentos.
 
-O produto terá dois lados principais:
+O produto não é marketplace. Cada negócio possui sua própria página pública.
 
-1. Painel do empreendedor
+## Sobre este repositório
 
-2. Página pública do cliente
+Este repositório, originalmente criado pelo Lovable como `time-perfected`, contém:
 
+- o protótipo visual e o código gerado/sincronizado pelo Lovable;
+- a documentação oficial do produto Agenda Certa;
+- dados fictícios usados para validar fluxos e telas.
 
-No painel do empreendedor, crie as seguintes telas:
+A branch `main` é a versão principal do projeto e deve manter código e documentação juntos. Branches de trabalho podem ser usadas como etapa segura, sem reescrever o histórico publicado.
 
-1. Dashboard
+## Estado atual
 
-- Mostrar resumo do dia.
+- O protótipo visual é navegável.
+- A Barbearia do Zé é apenas uma demonstração fictícia.
+- Ainda não existe backend real.
+- O Supabase ainda não está conectado.
+- Agendamentos e buscas usam dados fictícios.
+- Pagamentos e integrações externas ainda não foram implementados.
 
-- Cards com:
+## Funcionalidades representadas no protótipo
 
-  - Agendamentos de hoje
+- landing page, cadastro e login;
+- onboarding do negócio;
+- serviços e profissionais;
+- múltiplos períodos de atendimento;
+- página pública do cliente;
+- confirmação e gerenciamento de agendamento;
+- cancelamento e remarcação;
+- painel do empreendedor;
+- teste grátis e assinatura em modo visual.
 
-  - Ganho previsto
+## Documentação principal
 
-  - Ganho real
+- `PROJECT_CONTEXT.md`: contexto e decisões oficiais;
+- `MVP_SCOPE.md`: escopo da primeira versão;
+- `SCREEN_FLOW.md`: telas, rotas e estados;
+- `DATABASE_PLAN.md`: planejamento dos dados e restrições;
+- `AGENTS.md`: instruções do Lovable e regras oficiais para agentes;
+- `LOVABLE_NEXT_PROMPT.md`: próximos passos sugeridos para o protótipo;
+- `DEVELOPMENT_LOG.md`: histórico de decisões e avanços.
 
-  - Clientes que não compareceram
+## Integração com Lovable
 
-  - Dias restantes do teste grátis
+Este projeto foi construído com [Lovable](https://lovable.dev).
 
-- Mostrar lista dos próximos horários do dia.
+Continue o desenvolvimento no [editor do Lovable](https://lovable.dev/projects/1361dbac-cdf6-4474-8840-7060087e6ef5).
 
-- Cada agendamento deve mostrar:
+- Alterações feitas no Lovable são commitadas neste repositório.
+- Commits enviados à branch conectada aparecem no editor do Lovable.
+- Não faça force push nem reescreva commits já publicados.
+- Mantenha a branch conectada em estado funcional.
 
-  - horário
+## Desenvolvimento local
 
-  - nome do cliente
-
-  - serviço
-
-  - valor
-
-  - origem: online ou manual
-
-  - status: agendado, concluído, não compareceu ou cancelado
-
-2. Agenda
-
-- Mostrar agenda do dia em formato organizado.
-
-- Permitir visualizar agendamentos online e manuais.
-
-- Criar botões visuais para:
-
-  - marcar como concluído
-
-  - marcar como não compareceu
-
-  - cancelar
-
-- Mostrar aviso quando um cliente passou da tolerância de 15 minutos.
-
-3. Novo agendamento manual
-
-- Formulário para o empreendedor adicionar manualmente um agendamento.
-
-- Campos:
-
-  - nome do cliente
-
-  - WhatsApp
-
-  - serviço
-
-  - data
-
-  - horário
-
-  - observação
-
-- Explicar visualmente que esse horário ficará bloqueado na página pública.
-
-4. Serviços
-
-- Tela para cadastrar e listar serviços.
-
-- Cada serviço deve ter:
-
-  - nome
-
-  - descrição
-
-  - preço
-
-  - duração em minutos
-
-  - status ativo/inativo
-
-- Exemplo:
-
-  - Corte masculino — R$40 — 40 minutos
-
-  - Barba — R$25 — 25 minutos
-
-  - Corte + barba — R$65 — 60 minutos
-
-5. Configurações do negócio
-
-- Tela para editar:
-
-  - nome do negócio
-
-  - descrição
-
-  - link público
-
-  - WhatsApp
-
-  - endereço
-
-  - horários de funcionamento
-
-  - tolerância padrão de 15 minutos
-
-6. Assinatura
-
-- Mostrar que o empreendedor tem 15 dias grátis.
-
-- Mostrar quantos dias restam.
-
-- Mostrar plano mensal fictício de R$39/mês ou R$49/mês.
-
-- Não implementar pagamento real ainda.
-
-- Criar botão visual “Assinar agora”.
-
--O sistema também deve considerar que alguns negócios possuem mais de um profissional.
-
-Exemplo:
-
-Uma barbearia pode ter vários barbeiros, e o cliente pode querer agendar especificamente com um deles.
-
-Crie uma área chamada “Profissionais” no painel do empreendedor.
-
-Nessa área, o empreendedor pode cadastrar profissionais com:
-
-- nome
-
-- foto opcional
-
-- serviços que realiza
-
-- status ativo/inativo
-
-Regras:
-
-- Se o negócio tiver apenas um profissional ativo, a página pública do cliente NÃO deve mostrar a etapa “Escolha o profissional”.
-
-- Se o negócio tiver dois ou mais profissionais ativos, a página pública deve mostrar a etapa “Escolha o profissional”.
-
-- Os horários disponíveis devem considerar o profissional escolhido.
-
-- Se Carlos está ocupado às 16:00, esse horário fica indisponível para Carlos, mas pode continuar disponível para João se João estiver livre.
-
-- Agendamentos manuais também devem permitir escolher o profissional.
-
-- A agenda do empreendedor deve mostrar qual profissional fará cada atendimento.
-
-No MVP, não crie login separado para cada profissional.
-
-O dono do negócio controla todos os profissionais no mesmo painel.
-
-Não implemente comissão, salário, repasse ou permissões avançadas.-
-
-7. Profissionais
-
-- Tela para cadastrar profissionais do negócio.
-
-- Mostrar lista de profissionais ativos e inativos.
-
-- Cada profissional deve ter nome, foto opcional e serviços que realiza.
-
-- Explicar visualmente que negócios com apenas um profissional não mostram escolha de profissional para o cliente.
-
-Na página pública do cliente, crie o fluxo:
-
-1. Página do negócio
-
-- Mostrar nome do negócio.
-
-- Mostrar descrição.
-
-- Mostrar serviços com preço e duração.
-
-- Cliente escolhe um serviço.
-
-2. Escolha de data e horário
-
-- Mostrar horários disponíveis.
-
-- Apenas horários livres devem aparecer visualmente.
-
-- Mostrar que horários ocupados não aparecem ou ficam indisponíveis.
-
-3. Dados do cliente
-
-- Campos:
-
-  - nome
-
-  - WhatsApp
-
-  - observação opcional
-
-4. Revisão e confirmação
-
-- Mostrar resumo:
-
-  - serviço
-
-  - data
-
-  - horário
-
-  - preço
-
-  - duração
-
-- Mostrar aviso obrigatório:
-
-  “Atenção: seu horário possui tolerância de 15 minutos. Caso você não chegue dentro desse prazo, seu horário poderá ser liberado para outro cliente.”
-
-5. Tela final de confirmação
-
-- Mostrar mensagem:
-
-  “Agendamento confirmado com sucesso.”
-
-- Mostrar dados do agendamento.
-
-Design:
-
-- Interface moderna, simples e limpa.
-
-- Pensada para microempreendedores que não gostam de sistemas complicados.
-
-- Visual profissional, mas fácil de entender.
-
-- Responsivo para celular e desktop.
-
-- Use componentes bem organizados.
-
-- Use dados fictícios realistas.
-
-Não crie marketplace.
-
-Não crie app mobile nativo.
-
-Não crie pagamento real.
-
-Não crie WhatsApp automático.
-
-Não crie integração com Google Agenda.
-
-Não crie IA atendente.
-
-Não complique o sistema.
-
-Objetivo do protótipo:
-
-Validar se o fluxo do cliente e do empreendedor faz sentido antes de conectar banco de dados real.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/1361dbac-cdf6-4474-8840-7060087e6ef5).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Para trabalhar localmente, é necessário Node.js e npm.
 
 ```sh
 git clone <this-repository-url>
-cd <repository-name>
+cd time-perfected
 npm i
 npm run dev
 ```
+
+Antes de alterar o projeto, leia `AGENTS.md` e os documentos oficiais.
