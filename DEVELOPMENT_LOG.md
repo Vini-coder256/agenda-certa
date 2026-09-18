@@ -212,19 +212,19 @@ Quando houver novos créditos, priorizar o painel do empreendedor, especialmente
 
 Esta sessão atualizou somente o `DEVELOPMENT_LOG.md`. Nenhum código, backend, Supabase, migration ou outro arquivo foi criado ou alterado.
 
-## 2026-09-18 — Migração da documentação oficial para time-perfected
+## 2026-09-18 — Migração da documentação para o repositório de código
 
 ### Contexto
 
-- O Lovable criou o repositório `time-perfected` com o código do protótipo visual.
-- O repositório `agenda-certa` continha a documentação oficial do produto.
-- A documentação oficial foi copiada e integrada ao repositório `time-perfected`.
+- O Lovable criou o repositório de código, então chamado `time-perfected`, com o protótipo visual.
+- O antigo repositório documental, então chamado `agenda-certa`, continha a documentação oficial do produto.
+- A documentação oficial foi copiada e integrada ao repositório de código, então chamado `time-perfected`.
 
 ### Decisão de organização
 
-- `time-perfected` passa a ser temporariamente o repositório principal do projeto, reunindo código e documentação.
-- A branch `main` de `time-perfected` deve continuar sendo a versão principal com código e documentação juntos.
-- O repositório `agenda-certa` permanece intacto como backup histórico.
+- O repositório de código, então chamado `time-perfected`, passou a ser temporariamente o repositório principal do projeto, reunindo código e documentação.
+- A branch `main` do repositório de código passou a manter código e documentação juntos.
+- O antigo repositório documental permaneceu intacto como backup histórico.
 - A branch `docs-migration` foi criada a partir da `main` e usada como etapa segura para preparar a migração.
 - Branches não serão usadas para separar permanentemente código e documentação.
 
@@ -246,7 +246,7 @@ Esta sessão atualizou somente o `DEVELOPMENT_LOG.md`. Nenhum código, backend, 
 
 - Nenhum código do aplicativo foi alterado.
 - Nenhum arquivo do Lovable foi apagado.
-- Nenhum arquivo do repositório `agenda-certa` foi removido.
+- Nenhum arquivo do antigo repositório documental foi removido.
 - Não houve force push.
 - O histórico publicado não foi reescrito.
 - Não houve rebase, amend ou squash de commits publicados.
@@ -254,4 +254,28 @@ Esta sessão atualizou somente o `DEVELOPMENT_LOG.md`. Nenhum código, backend, 
 
 ### Próximo passo recomendado
 
-Revisar a branch `docs-migration` e, estando correta, abrir um Pull Request para incorporar a documentação à `main` de `time-perfected` por merge normal.
+A migração documental foi incorporada à `main` por fluxo normal, sem reescrever o histórico.
+
+## 2026-09-18 — Renomeação e organização final dos repositórios
+
+### Alterações de nome
+
+- O repositório de código chamado anteriormente `time-perfected` foi renomeado para `agenda-certa`.
+- O antigo repositório documental chamado anteriormente `agenda-certa` foi renomeado para `agenda-certa-docs-backup`.
+
+### Organização atual
+
+- Repositório principal: `Vini-coder256/agenda-certa`.
+- Backup histórico da documentação: `Vini-coder256/agenda-certa-docs-backup`.
+- A branch `main` do repositório principal reúne código e documentação.
+- O backup histórico não deve ser tratado como repositório principal nem receber o desenvolvimento normal do produto.
+
+### Escopo desta atualização
+
+- Referências correntes ao nome antigo foram substituídas pela organização atual.
+- Referências históricas a `time-perfected` foram mantidas somente neste log para registrar a renomeação.
+- O bloco original do Lovable em `AGENTS.md` foi preservado integralmente.
+- Nenhuma lógica do aplicativo foi alterada.
+- Nenhum backend, Supabase ou migration foi criado.
+- Não houve force push, rebase, amend, squash ou reescrita de histórico.
+
