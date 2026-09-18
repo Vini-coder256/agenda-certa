@@ -10,10 +10,11 @@ O produto não é marketplace. Cada negócio possui sua própria página públic
 
 ## Sobre este repositório
 
-Este repositório, originalmente criado pelo Lovable como `time-perfected`, contém:
+Este é o repositório principal atual do projeto, `Vini-coder256/agenda-certa`, e contém:
 
 - o protótipo visual e o código gerado/sincronizado pelo Lovable;
 - a documentação oficial do produto Agenda Certa;
+- o histórico do antigo repositório documental, agora preservado em `Vini-coder256/agenda-certa-docs-backup`;
 - dados fictícios usados para validar fluxos e telas.
 
 A branch `main` é a versão principal do projeto e deve manter código e documentação juntos. Branches de trabalho podem ser usadas como etapa segura, sem reescrever o histórico publicado.
@@ -66,7 +67,7 @@ Para trabalhar localmente, é necessário Node.js e npm.
 
 ```sh
 git clone <this-repository-url>
-cd time-perfected
+cd agenda-certa
 npm i
 npm run dev
 ```
