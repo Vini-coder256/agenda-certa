@@ -320,3 +320,57 @@ Documentar o estado atual do protótipo visual antes das próximas alterações 
 - Nenhum backend, Supabase ou migration foi criado.
 - Nenhuma rota ou lógica do aplicativo foi modificada.
 
+## 2026-09-18 — Snapshot v0.2 do protótipo visual
+
+### Objetivo da sessão
+
+Atualizar a memória do projeto para registrar o estado visual atual antes das próximas evoluções, mantendo backend e persistência fora do escopo.
+
+### Commits funcionais recentes
+
+- `238157862dc64c2fec976b4b1404b79516689a72`: estabilização do TypeScript e dos ajustes parciais feitos pelo Lovable.
+- `a702375b1a3458b84d2e1028c954be1c0b9a4b2c`: ajustes visuais de tolerância numérica segura e múltiplos períodos de atendimento.
+
+### Estado registrado no snapshot
+
+- `CURRENT_PROTOTYPE_SNAPSHOT.md` atualizado para **v0.2**.
+- Agenda com resumo do dia, filtros, ações de status, edição básica e bloqueio visual de horários.
+- Serviços reforçando desativação e reativação em vez de exclusão do histórico.
+- Configurações com tolerância numérica de 5 a 60 minutos, avisos visuais e explicação sobre ausência de cancelamento automático.
+- Configurações com múltiplos períodos por dia, adição e remoção de períodos, dias fechados apagados e reativação com período padrão.
+- Agenda, serviços, profissionais, bloqueios e configurações continuam baseados em mocks, `useState` ou armazenamento local.
+
+### Testes manuais no preview
+
+Os testes abaixo foram executados e passaram:
+
+- tolerância aceita somente números;
+- aviso abaixo de 5 minutos;
+- aviso acima de 60 minutos;
+- segunda-feira com dois períodos;
+- adicionar período;
+- remover período;
+- domingo fechado visualmente apagado;
+- reativação de dia fechado com período padrão.
+
+### Decisão sobre persistência
+
+A ausência de persistência é esperada nesta fase. Alterações visuais podem resetar ao sair e voltar para a tela. Persistência real, autenticação, banco, Supabase e RLS permanecem fora do escopo até a fase autorizada de backend.
+
+### Pendências principais
+
+- persistência real das configurações e demais dados;
+- autenticação real do empreendedor;
+- banco de dados, Supabase e RLS;
+- disponibilidade real considerando períodos, bloqueios e agendamentos;
+- prevenção segura de reservas simultâneas;
+- painel admin;
+- assinatura e pagamento real;
+- estados especiais reais da página pública.
+
+### Escopo desta atualização
+
+- Somente `CURRENT_PROTOTYPE_SNAPSHOT.md` e `DEVELOPMENT_LOG.md` foram atualizados.
+- Nenhum código TypeScript ou React foi alterado.
+- Nenhum backend, Supabase, autenticação, migration ou pagamento foi criado.
+
