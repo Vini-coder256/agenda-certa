@@ -3,20 +3,21 @@
 ## 1. Identificação do snapshot
 
 - **Nome do produto:** Agenda Certa
-- **Versão do snapshot:** v0.1
+- **Versão do snapshot:** v0.2
 - **Data:** 2026-09-18
 - **Repositório analisado:** `Vini-coder256/agenda-certa`
 - **Branch analisada:** `main`
 - **Status geral:** protótipo visual navegável, sem backend real
 - **Observação:** dados fictícios/mockados
 
-Este documento registra o estado observado no código e na documentação da branch `main` em 2026-09-18. Ele descreve o protótipo como existe hoje; não afirma que os fluxos visuais já possuem persistência, segurança ou regras de servidor.
+Este documento registra o estado observado no código e na documentação da branch `main` em 2026-09-18, após os commits `238157862dc64c2fec976b4b1404b79516689a72` e `a702375b1a3458b84d2e1028c954be1c0b9a4b2c`. Ele descreve o protótipo como existe hoje; não afirma que os fluxos visuais já possuem persistência, segurança ou regras de servidor.
 
 ## 2. Histórico de snapshots
 
 | Versão | Data | Descrição | Status |
 |---|---|---|---|
-| v0.1 | 2026-09-18 | Protótipo visual Lovable organizado com documentação oficial migrada para o repositório principal | Atual |
+| v0.1 | 2026-09-18 | Protótipo visual Lovable organizado com documentação oficial migrada para o repositório principal | Histórico |
+| v0.2 | 2026-09-18 | Agenda aprimorada, bloqueios visuais, preservação de histórico em serviços e configurações com tolerância segura e múltiplos períodos | Atual |
 
 ## 3. Visão geral do protótipo
 
@@ -48,7 +49,7 @@ Não existem autenticação real, banco de dados, Supabase conectado, API de bac
 | `/b/:slug` | Página pública de agendamento. Atualmente exibe a Barbearia do Zé mesmo sem validação real do slug. |
 | `/b/:slug/gerenciar` | Busca e gerenciamento visual de um agendamento por WhatsApp e código. |
 | `/painel` | Layout do painel e dashboard inicial. Pode mostrar estado vazio, configuração local ou demonstração. |
-| `/painel/agenda` | Agenda visual com filtro por profissional, status e ações simuladas. |
+| `/painel/agenda` | Agenda visual com resumo do dia, filtros, ações de status, edição básica e bloqueios de horário simulados. |
 | `/painel/novo-agendamento` | Formulário de agendamento manual simulado. |
 | `/painel/servicos` | Listagem e manutenção visual de serviços. |
 | `/painel/profissionais` | Listagem e manutenção visual de profissionais e seus serviços. |
@@ -72,7 +73,7 @@ A seção **O que já está no protótipo** destaca resumo do dia, vários profi
 
 A separação entre empreendedor e cliente ocorre pelos dois botões de demonstração e pelas jornadas distintas. O produto não apresenta busca, vitrine ou catálogo de negócios; o link público pertence a um negócio específico, o que mantém a proposta fora de marketplace.
 
-Observação de coerência: o cartão da landing chama a funcionalidade de **Tolerância de 15 min**, embora a regra oficial permita configurar 5, 10, 15, 20 ou 30 minutos, com 15 como padrão.
+A landing apresenta a funcionalidade como **Tolerância configurável**, com padrão visual de 15 minutos e sem cancelamento automático.
 
 ## 6. Cadastro e login
 
@@ -116,9 +117,9 @@ Limitações observadas:
 - o slug não é validado contra negócios reais;
 - a confirmação não persiste o agendamento;
 - as datas e disponibilidades são fixas;
-- os intervalos mockados não seguem sempre passos de 15 minutos;
+- os intervalos mockados foram ajustados visualmente para uma grade de 15 minutos;
 - não há cálculo real de duração, fechamento, antecedência mínima, limite de 30 dias, bloqueios ou timezone;
-- o aviso básico de privacidade previsto na documentação oficial não aparece no formulário;
+- o formulário mostra o aviso básico de privacidade antes da confirmação;
 - estados como slug inexistente, negócio pausado, teste vencido e ausência de horários ainda não estão representados nesta rota.
 
 ## 9. Gerenciamento de agendamento pelo cliente
@@ -153,18 +154,26 @@ Os números, clientes, datas e valores são fictícios. Após o onboarding local
 
 ## 11. Agenda do empreendedor
 
-A Agenda já possui seletor visual de dias, filtro por profissional e cartões com horário, duração, cliente, WhatsApp, serviço, preço, profissional, origem, status e observação. Para itens agendados, existem ações locais de **Concluído**, **Não veio** e **Cancelar**. O atraso acima da tolerância recebe destaque.
+A Agenda agora possui resumo do dia com total de agendamentos, concluídos, faltas, cancelados, ganho previsto, ganho real e perda por falta. Também apresenta filtros visuais de período, data, profissional e status.
+
+Cada cartão mostra horário, cliente, WhatsApp, serviço, profissional, duração, valor, origem, status e observação quando existente. Para itens agendados, as ações locais permitem:
+
+- marcar como concluído;
+- marcar como não compareceu;
+- cancelar;
+- editar nome do cliente, WhatsApp e observação.
+
+A edição não oferece data, horário, serviço ou profissional e orienta cancelar o agendamento e criar outro quando esses dados precisarem mudar.
+
+A ação **Bloquear horário** abre uma janela visual com data, início, fim, profissional específico ou negócio inteiro e motivo. A tela também exibe bloqueios fictícios e explica que eles não aparecem ao cliente.
 
 Limitações atuais:
 
-- trocar o dia não troca os agendamentos exibidos;
-- as alterações de status vivem somente no estado da tela;
-- não existe ação **Bloquear horário**;
-- não há visualização nem cadastro de bloqueios gerais ou por profissional;
-- não há edição de nome, WhatsApp e observação;
+- filtros, alterações, edições e bloqueios vivem somente no estado local da tela;
+- trocar período ou data não consulta dados reais;
+- bloqueios não alteram a disponibilidade pública real;
 - não há validação de transição de status ou cálculo real baseado em data e timezone;
-- o texto de atraso diz que o horário pode ser liberado, mas nenhuma operação real acontece.
-
+- nenhuma dessas ações é persistida ao sair e voltar para a tela.
 ## 12. Agendamento manual
 
 O formulário contém nome e WhatsApp do cliente, serviço, profissional apto, data, horário, sugestões de horários livres e observação. O resumo mostra duração, valor e tolerância. A interface explica que o horário escolhido deixaria de aparecer publicamente somente para aquele profissional e que os demais continuariam livres.
@@ -173,12 +182,11 @@ Ao salvar, surge uma confirmação visual. Nenhum registro é persistido, a Agen
 
 ## 13. Serviços
 
-A tela lista serviços com nome, descrição, preço, duração e status ativo/inativo. Há formulário visual para novo serviço, botão de edição, alternância entre ativo e inativo e um ícone de exclusão.
+A tela lista serviços com nome, descrição, preço, duração e status ativo/inativo. Há formulário visual para novo serviço, botão de edição e alternância entre ativo e inativo.
 
-O formulário apenas fecha ao salvar; não acrescenta um serviço real. Editar e excluir não possuem implementação funcional. A alternância de status funciona somente na memória da tela.
+A interface agora reforça **Desativar serviço** e **Reativar serviço**, removendo o incentivo visual à exclusão de histórico. Também explica que serviços com histórico devem ser desativados, nunca apagados.
 
-Desalinhamento visual relevante: a documentação determina desativar, em vez de apagar, serviços que possuam histórico. O ícone de exclusão aparece sem contexto ou proteção, embora não execute exclusão.
-
+O formulário ainda não cria um registro persistente e a edição não possui backend. A alternância de status funciona somente na memória da tela.
 ## 14. Profissionais
 
 A tela separa ativos e inativos, mostra nome, função, iniciais e serviços realizados e permite ativar/desativar localmente. O cadastro visual contém nome, foto opcional, serviços e status ativo.
@@ -194,18 +202,21 @@ A tela apresenta:
 - nome e descrição do negócio;
 - slug/link público e botão visual de copiar;
 - WhatsApp e endereço;
-- tolerância padrão;
-- ativação dos dias e horário de abertura/fechamento;
+- tolerância numérica editável, com padrão de 15 minutos;
+- aceitação somente de dígitos;
+- mínimo de 5 e máximo de 60 minutos;
+- avisos visuais quando o valor fica abaixo ou acima do intervalo;
+- explicação de que a tolerância afeta somente avisos e destaque de atraso, sem cancelamento automático;
+- ativação e desativação dos dias;
+- um ou mais períodos de atendimento por dia;
+- ações **Adicionar período** e **Remover período**;
+- dias fechados visualmente apagados;
+- criação de um período padrão quando um dia fechado é reativado;
 - botão **Salvar configurações**.
 
-Limitações e diferenças:
+A segunda-feira demonstra os períodos 09:00–12:00 e 13:00–18:00. A tela explica que pausas como almoço não aparecem ao cliente e apenas tornam aqueles horários indisponíveis.
 
-- os valores não são persistidos;
-- a tolerância é um campo numérico livre, sem restringir a 5, 10, 15, 20 ou 30 minutos;
-- não há timezone;
-- cada dia permite apenas um intervalo nessa tela, embora o onboarding e a regra oficial permitam múltiplos períodos;
-- não há configurações de privacidade ou estado da conta.
-
+Todas as mudanças permanecem em `useState`. Nada é persistido: ao sair da tela e voltar, os valores podem retornar aos mocks. Não há timezone configurável, backend ou gravação no Supabase.
 ## 16. Assinatura e teste grátis
 
 A tela mostra teste grátis de 15 dias, nove dias restantes, datas fixas e barra de progresso. Existem dois planos visuais: Essencial por R$ 39/mês e Equipe por R$ 49/mês. Selecionar **Assinar agora** apenas altera o destaque local.
@@ -222,7 +233,7 @@ Os nomes, preços e diferenças entre planos são conteúdo do protótipo e aind
 
 `src/lib/setup.ts` guarda no `localStorage` os dados preenchidos no onboarding. Isso é persistência apenas no navegador, sem usuário autenticado, banco, sincronização ou isolamento seguro.
 
-A busca por agendamento não recupera o que foi criado na página pública: ela sempre retorna o mesmo exemplo. Da mesma forma, agendamentos manuais, status, serviços, profissionais e configurações alterados nas telas não sobrevivem de maneira confiável nem alimentam todo o app.
+A busca por agendamento não recupera o que foi criado na página pública: ela sempre retorna o mesmo exemplo. Agenda, serviços, profissionais, bloqueios e configurações continuam baseados em mocks, `useState` ou armazenamento local. Alterações visuais podem resetar ao sair da tela e não alimentam todo o app.
 
 ## 18. Coerência com a documentação
 
@@ -230,42 +241,37 @@ A busca por agendamento não recupera o que foi criado na página pública: ela 
 |---|---|---|
 | Posicionamento do produto | **Alinhado** | Agenda Certa é apresentado como Micro SaaS com link próprio, sem marketplace. |
 | Cadastro, login e onboarding visual | **Parcialmente alinhado** | Jornada principal existe, mas não há autenticação real, timezone no onboarding nem integração completa da configuração local. |
-| Serviços e profissionais | **Parcialmente alinhado** | Cadastro, status e vínculo aparecem visualmente; persistência não existe e há ícone de exclusão de serviço contrário à orientação de preservar histórico. |
-| Página pública e escolha de profissional | **Parcialmente alinhado** | Ordem principal, seleção condicional e dados do serviço estão presentes; disponibilidade e regras temporais são mocks. |
+| Serviços e profissionais | **Parcialmente alinhado** | Serviços agora reforçam desativar/reativar e profissionais representam status e vínculos; a persistência ainda não existe. |
+| Página pública e escolha de profissional | **Parcialmente alinhado** | Ordem principal, seleção condicional, aviso de privacidade e grade visual de 15 minutos estão presentes; disponibilidade e regras temporais continuam mockadas. |
 | Cancelamento e remarcação | **Parcialmente alinhado** | Fluxos e limite visual de 1 hora existem; não há busca, token, cálculo ou atualização real. |
-| Tolerância | **Parcialmente alinhado** | Aviso público e destaque de atraso existem; seletor ainda aceita qualquer número e a landing comunica 15 minutos como se fosse fixo. |
+| Tolerância | **Parcialmente alinhado** | O protótipo permite valor numérico de 5 a 60 minutos, mostra avisos e não cancela automaticamente; não há persistência nem efeito real fora da tela. |
 | Ganhos e status | **Alinhado no mock** | Fórmulas e quatro estados seguem as regras oficiais, mas não possuem persistência. |
-| Períodos de atendimento | **Parcialmente alinhado** | Onboarding suporta vários períodos; Configurações e mock principal suportam apenas um por dia. |
-| Bloqueios | **Desalinhado/ausente** | A documentação inclui bloqueio geral e por profissional no MVP, mas a Agenda não oferece a ação. |
-| Passos de 15 minutos | **Desalinhado no mock** | Há horários como 09:40 e 10:20, incompatíveis com uma grade iniciada a cada 15 minutos. |
+| Períodos de atendimento | **Alinhado visualmente** | Configurações agora permite múltiplos períodos, dias fechados e reativação com período padrão; tudo permanece local. |
+| Bloqueios | **Alinhado visualmente** | A Agenda oferece criação, exibição e remoção de bloqueios gerais ou por profissional; eles ainda não afetam a disponibilidade pública real. |
+| Passos de 15 minutos | **Alinhado no mock** | Disponibilidade, remarcação e sugestões foram ajustadas para horários em grade de 15 minutos. |
 | Estados especiais | **Desalinhado/ausente** | A maior parte dos estados definidos em `SCREEN_FLOW.md` ainda não está implementada visualmente. |
 | Admin da plataforma | **Desalinhado/ausente** | Não há rota ou tela do admin mínimo funcional. |
 | Banco e segurança | **Planejado, não implementado** | A ausência é esperada nesta fase; `DATABASE_PLAN.md` descreve o trabalho futuro. |
 
-Em síntese, o protótipo está alinhado com a narrativa e com os fluxos centrais, mas apenas parcialmente alinhado com as regras operacionais completas do MVP.
-
+Em síntese, o protótipo está mais alinhado visualmente com as regras operacionais, mas continua sem persistência, autenticação, isolamento e validações de servidor.
 ## 19. Principais lacunas atuais
 
-- backend ou Supabase;
-- autenticação e sessão reais;
-- banco de dados, migrations e políticas RLS;
-- isolamento de dados entre negócios;
-- persistência de cadastros e agendamentos;
-- validação de disponibilidade no servidor/banco;
-- prevenção atômica de conflitos e horários duplicados;
+- persistência real das configurações;
+- autenticação real do empreendedor;
+- banco de dados e migrations;
+- Supabase conectado;
+- políticas RLS e isolamento de dados entre negócios;
+- disponibilidade real considerando períodos, duração, bloqueios e agendamentos;
+- prevenção atômica de reservas simultâneas e horários duplicados;
+- persistência de agenda, serviços, profissionais e bloqueios;
 - geração e validação segura de código/token de gerenciamento;
 - cálculo consistente com timezone do negócio;
-- grade real em passos de 15 minutos, duração, períodos, antecedência e horizonte de 30 dias;
-- bloqueios gerais e por profissional;
 - atualização real após cancelamento e remarcação;
-- restrições reais de teste grátis e assinatura;
-- registro manual de pagamento/ativação;
-- admin mínimo da plataforma;
-- estados especiais da página pública;
+- painel admin da plataforma;
+- assinatura e pagamento real;
+- estados especiais reais da página pública;
 - validação básica de telefone, rate limit e demais proteções anti-spam;
-- aviso de privacidade no agendamento público;
 - política detalhada de retenção e exclusão de dados.
-
 ## 20. Próximas prioridades recomendadas
 
 1. Melhorar visualmente o painel sem iniciar backend: Agenda, bloqueios, edição permitida, estados vazios e feedbacks.
@@ -289,8 +295,23 @@ Em síntese, o protótipo está alinhado com a narrativa e com os fluxos centrai
 - **Exclusão de histórico:** controles de exclusão visual sem regra clara podem incentivar implementação incompatível com a preservação de histórico.
 - **Assinatura:** telas de plano podem parecer definitivas mesmo sem preços e diferenças formalmente consolidados.
 
-## 22. Conclusão
+## 22. Testes manuais do snapshot v0.2
 
-O Agenda Certa está em uma boa etapa de protótipo visual: as duas jornadas principais são navegáveis, o posicionamento do produto está claro e o painel já demonstra o valor esperado. Ainda não é um MVP funcional, porque regras críticas, segurança e persistência não existem fora dos mocks e do armazenamento local.
+Os seguintes testes foram realizados no preview e passaram:
 
-O próximo avanço deve continuar pelo painel e pelo alinhamento visual das regras já decididas. A preparação do backend deve começar somente depois de revisar modelagem, RLS, concorrência, timezone, privacidade e gerenciamento seguro de agendamentos.
+- tolerância aceita somente números;
+- aviso aparece abaixo de 5 minutos;
+- aviso aparece acima de 60 minutos;
+- segunda-feira aparece com dois períodos;
+- adicionar período funciona;
+- remover período funciona;
+- domingo fechado fica visualmente apagado;
+- reativar um dia fechado cria um período padrão.
+
+Esses testes confirmam o comportamento visual. Eles não validam persistência, backend, disponibilidade real ou segurança.
+
+## 23. Conclusão
+
+O Agenda Certa permanece um protótipo visual navegável. A versão v0.2 melhora principalmente Agenda, bloqueios, preservação visual de histórico em Serviços e Configurações de tolerância e períodos.
+
+Ainda não existem backend real, Supabase conectado, autenticação real ou persistência real. Dados de agenda, serviços, profissionais, bloqueios e configurações permanecem em mocks, estado local ou `localStorage`. A persistência foi deliberadamente mantida fora do escopo até a fase de backend.
