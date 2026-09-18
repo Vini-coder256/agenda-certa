@@ -37,7 +37,7 @@ export const rescheduleDays = [
     day: "01",
     month: "set",
     label: "Segunda, 01/set",
-    times: ["09:40", "10:20", "13:00", "16:00"],
+    times: ["09:15", "10:00", "13:00", "16:00"],
   },
   {
     date: "2026-09-02",
@@ -53,6 +53,6 @@ export const rescheduleDays = [
     day: "03",
     month: "set",
     label: "Quarta, 03/set",
-    times: ["10:00", "13:40", "15:00", "18:00"],
+    times: ["10:00", "13:30", "15:00", "18:00"],
   },
 ];

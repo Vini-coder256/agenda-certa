@@ -261,8 +261,14 @@ function PublicBooking() {
           <section className="space-y-4">
             <h2 className="text-lg font-bold">Seus dados</h2>
             <div className="surface-card space-y-4 p-5">
+              <p className="rounded-xl border border-info/40 bg-info-soft p-3 text-sm text-info">
+                Ao agendar, você informa nome e WhatsApp para que o negócio possa identificar e
+                acompanhar seu atendimento.
+              </p>
+
               <div className="space-y-2">
                 <Label htmlFor="c-nome">Nome completo</Label>
+
                 <Input
                   id="c-nome"
                   placeholder="Seu nome"

@@ -30,7 +30,7 @@ export const Route = createFileRoute("/painel/novo-agendamento")({
   component: NovoAgendamento,
 });
 
-const horarios = ["09:00", "09:40", "10:20", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+const horarios = ["09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "13:00", "13:15", "13:30", "13:45", "14:00", "15:00", "16:00", "17:00", "17:30", "18:00"];
 
 function NovoAgendamento() {
   const [serviceId, setServiceId] = useState(activeServices[0]!.id);

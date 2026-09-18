@@ -284,35 +284,74 @@ export const todaySummary = {
   noShows: appointments.filter((a) => a.status === "nao_compareceu").length,
 };
 
-/** Horários fictícios por profissional. false = ocupado (não aparece para o cliente). */
+/** Horários fictícios por profissional em grade de 15 minutos. false = ocupado (não aparece para o cliente). */
 export const availabilityByProfessional: Record<string, Record<string, boolean>> = {
   p1: {
     "09:00": false,
-    "09:40": true,
-    "10:20": true,
+    "09:15": true,
+    "09:30": true,
+    "09:45": true,
+    "10:00": true,
+    "10:15": true,
     "11:00": false,
     "11:30": false,
     "13:00": true,
+    "13:15": true,
     "14:00": true,
     "15:00": false,
     "16:00": false,
     "17:00": true,
+    "17:30": true,
     "18:00": true,
   },
   p2: {
     "09:00": true,
-    "09:40": true,
+    "09:15": true,
+    "09:30": true,
+    "09:45": true,
     "10:00": false,
+    "10:15": false,
     "11:00": true,
     "11:30": true,
     "13:00": false,
+    "13:15": true,
+    "13:30": true,
+    "13:45": true,
     "14:00": false,
     "15:00": true,
     "16:00": true,
     "17:00": true,
+    "17:30": true,
     "18:00": false,
   },
 };
+
+export type TimeBlock = {
+  id: string;
+  date: string;
+  start: string;
+  end: string;
+  /** null = negócio inteiro */
+  professionalId: string | null;
+  reason?: string;
+};
+
+/** Bloqueios fictícios (não aparecem para o cliente — o horário apenas fica indisponível). */
+export const timeBlocks: TimeBlock[] = [
+  { id: "bl1", date: "2026-08-15", start: "12:00", end: "13:00", professionalId: null, reason: "Almoço" },
+  { id: "bl2", date: "2026-08-15", start: "16:30", end: "17:00", professionalId: "p1", reason: "Compromisso" },
+];
+
+export const blockReasons = [
+  "Folga",
+  "Compromisso",
+  "Manutenção",
+  "Emergência",
+  "Horário reservado internamente",
+];
+
+export const toleranceOptions = [5, 10, 15, 20, 30];
+
 
 export const nextDays = [
   { date: "2026-08-15", label: "Hoje", weekday: "Sáb", day: "15", month: "ago" },

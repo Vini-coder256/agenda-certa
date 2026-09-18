@@ -119,12 +119,14 @@ function Servicos() {
                 <Pencil className="mr-1 size-4" /> Editar
               </Button>
               <Button size="sm" variant="ghost" onClick={() => toggle(s.id)}>
-                {s.status === "ativo" ? "Desativar" : "Ativar"}
-              </Button>
-              <Button size="sm" variant="ghost" className="text-destructive">
-                <Trash2 className="size-4" />
+                <Archive className="mr-1 size-4" />
+                {s.status === "ativo" ? "Desativar serviço" : "Reativar serviço"}
               </Button>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Serviços com histórico devem ser desativados, nunca apagados.
+            </p>
+
           </article>
         ))}
       </div>
