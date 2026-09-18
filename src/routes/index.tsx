@@ -44,8 +44,9 @@ const features = [
   },
   {
     icon: Clock,
-    title: "Tolerância de 15 min",
-    text: "Aviso automático quando o cliente atrasa e o horário pode ser liberado.",
+    title: "Tolerância configurável",
+    text: "Padrão de 15 min, ajustável pelo negócio. Aviso de atraso sem cancelar sozinho.",
+
   },
   {
     icon: CalendarCheck,
