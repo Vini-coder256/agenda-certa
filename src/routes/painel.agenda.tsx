@@ -45,7 +45,8 @@ export const Route = createFileRoute("/painel/agenda")({
       { property: "og:title", content: "Agenda do dia | Agenda Certa" },
       {
         property: "og:description",
-        content: "Controle os atendimentos do dia por profissional, com aviso de tolerância de atraso.",
+        content:
+          "Controle os atendimentos do dia por profissional, com aviso de tolerância de atraso.",
       },
     ],
   }),
@@ -68,7 +69,7 @@ function Agenda() {
   const [proFilter, setProFilter] = useState<string>("todos");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("todos");
   const [range, setRange] = useState<RangeFilter>("hoje");
-  const [customDate, setCustomDate] = useState(nextDays[0].date);
+  const [customDate, setCustomDate] = useState(nextDays[0]!.date);
   const [dayIndex, setDayIndex] = useState(0);
 
   const [editing, setEditing] = useState<Appointment | null>(null);
@@ -76,7 +77,7 @@ function Agenda() {
 
   const [blockOpen, setBlockOpen] = useState(false);
   const [blockForm, setBlockForm] = useState({
-    date: nextDays[0].date,
+    date: nextDays[0]!.date,
     start: "12:00",
     end: "13:00",
     professionalId: "todos",
@@ -94,16 +95,20 @@ function Agenda() {
   const saveEdit = () => {
     if (!editing) return;
     setItems((prev) =>
-      prev.map((a) =>
-        a.id === editing.id
-          ? {
-              ...a,
-              clientName: editForm.clientName,
-              whatsapp: editForm.whatsapp,
-              note: editForm.note || undefined,
-            }
-          : a,
-      ),
+      prev.map((a) => {
+        if (a.id !== editing.id) return a;
+
+        const updated: Appointment = {
+          ...a,
+          clientName: editForm.clientName,
+          whatsapp: editForm.whatsapp,
+        };
+
+        if (editForm.note) updated.note = editForm.note;
+        else delete updated.note;
+
+        return updated;
+      }),
     );
     setEditing(null);
   };
@@ -171,7 +176,8 @@ function Agenda() {
           </p>
           <p className="mt-1 font-display text-2xl font-bold">{summary.total}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {summary.concluidos} concluídos · {summary.faltas} faltas · {summary.cancelados} cancelados
+            {summary.concluidos} concluídos · {summary.faltas} faltas · {summary.cancelados}{" "}
+            cancelados
           </p>
         </div>
         <div className="surface-card p-4">
@@ -192,7 +198,9 @@ function Agenda() {
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Perda por falta
           </p>
-          <p className="mt-1 font-display text-2xl font-bold text-destructive">{brl(summary.perda)}</p>
+          <p className="mt-1 font-display text-2xl font-bold text-destructive">
+            {brl(summary.perda)}
+          </p>
           <p className="mt-1 text-xs text-muted-foreground">Cancelados não entram nos ganhos</p>
         </div>
       </section>
@@ -251,7 +259,9 @@ function Agenda() {
             onClick={() => setProFilter("todos")}
             className={cn(
               "rounded-full border px-3 py-1 text-sm transition-colors",
-              proFilter === "todos" ? "border-primary bg-primary-soft text-primary" : "hover:bg-muted",
+              proFilter === "todos"
+                ? "border-primary bg-primary-soft text-primary"
+                : "hover:bg-muted",
             )}
           >
             Todos
@@ -262,7 +272,9 @@ function Agenda() {
               onClick={() => setProFilter(p.id)}
               className={cn(
                 "rounded-full border px-3 py-1 text-sm transition-colors",
-                proFilter === p.id ? "border-primary bg-primary-soft text-primary" : "hover:bg-muted",
+                proFilter === p.id
+                  ? "border-primary bg-primary-soft text-primary"
+                  : "hover:bg-muted",
               )}
             >
               {p.name.split(" ")[0]}
@@ -274,20 +286,22 @@ function Agenda() {
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Status
           </span>
-          {(["todos", "agendado", "concluido", "nao_compareceu", "cancelado"] as StatusFilter[]).map(
-            (s) => (
-              <button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={cn(
-                  "rounded-full border px-3 py-1 text-sm transition-colors",
-                  statusFilter === s ? "border-primary bg-primary-soft text-primary" : "hover:bg-muted",
-                )}
-              >
-                {s === "todos" ? "Todos" : statusLabels[s as AppointmentStatus]}
-              </button>
-            ),
-          )}
+          {(
+            ["todos", "agendado", "concluido", "nao_compareceu", "cancelado"] as StatusFilter[]
+          ).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={cn(
+                "rounded-full border px-3 py-1 text-sm transition-colors",
+                statusFilter === s
+                  ? "border-primary bg-primary-soft text-primary"
+                  : "hover:bg-muted",
+              )}
+            >
+              {s === "todos" ? "Todos" : statusLabels[s as AppointmentStatus]}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -548,3 +562,4 @@ function Agenda() {
     </PainelShell>
   );
 }
+

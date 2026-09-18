@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Clock, Pencil, Plus, Trash2 } from "lucide-react";
+import { Archive, Clock, Pencil, Plus } from "lucide-react";
 import { useState } from "react";
 
 import { PainelShell } from "@/components/painel/painel-shell";
@@ -36,7 +36,9 @@ function Servicos() {
 
   const toggle = (id: string) =>
     setList((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, status: s.status === "ativo" ? "inativo" : "ativo" } : s)),
+      prev.map((s) =>
+        s.id === id ? { ...s, status: s.status === "ativo" ? "inativo" : "ativo" } : s,
+      ),
     );
 
   return (
@@ -63,7 +65,11 @@ function Servicos() {
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="s-desc">Descrição</Label>
-            <Textarea id="s-desc" rows={2} placeholder="Explique rapidamente o que está incluído." />
+            <Textarea
+              id="s-desc"
+              rows={2}
+              placeholder="Explique rapidamente o que está incluído."
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="s-preco">Preço (R$)</Label>
@@ -100,7 +106,9 @@ function Servicos() {
               <span
                 className={cn(
                   "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                  s.status === "ativo" ? "bg-success-soft text-success" : "bg-muted text-muted-foreground",
+                  s.status === "ativo"
+                    ? "bg-success-soft text-success"
+                    : "bg-muted text-muted-foreground",
                 )}
               >
                 {s.status === "ativo" ? "Ativo" : "Inativo"}
@@ -126,10 +134,10 @@ function Servicos() {
             <p className="mt-3 text-xs text-muted-foreground">
               Serviços com histórico devem ser desativados, nunca apagados.
             </p>
-
           </article>
         ))}
       </div>
     </PainelShell>
   );
 }
+
