@@ -279,3 +279,22 @@ A migração documental foi incorporada à `main` por fluxo normal, sem reescrev
 - Nenhum backend, Supabase ou migration foi criado.
 - Não houve force push, rebase, amend, squash ou reescrita de histórico.
 
+## 2026-09-18 — Lovable conectado à main e limpeza de branch antiga
+
+### Estado confirmado
+
+- O Lovable passou a apontar para a branch `main`.
+- O preview foi testado após a mudança para `main` e continuou funcionando normalmente.
+- A branch `lovable-code` foi removida depois dessa confirmação.
+- O repositório principal atual é `Vini-coder256/agenda-certa`.
+- O repositório `Vini-coder256/agenda-certa-docs-backup` é somente um backup histórico.
+- A branch `docs-migration` foi usada como etapa segura da migração documental, já foi mesclada na `main` e permanece apenas como branch histórica/temporária.
+- A branch `main` é a única branch principal do projeto.
+
+### Escopo desta organização
+
+- Nenhum código funcional do aplicativo foi alterado.
+- Nenhum backend, Supabase ou migration foi criado.
+- Não houve force push, rebase, amend, squash ou reescrita de histórico.
+- O bloco original do Lovable em `AGENTS.md` permaneceu intacto.
+
