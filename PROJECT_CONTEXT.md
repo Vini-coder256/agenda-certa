@@ -2,6 +2,8 @@
 
 Este documento é a memória oficial do produto. O GitHub é a fonte oficial da verdade do projeto.
 
+O repositório principal atual é `Vini-coder256/agenda-certa`, reunindo código e documentação na branch `main`. O antigo repositório apenas documental foi renomeado para `Vini-coder256/agenda-certa-docs-backup` e permanece somente como backup histórico.
+
 ## 1. Nome e definição
 
 O nome oficial e de trabalho do MVP é **Agenda Certa**. Ele pode mudar no futuro, mas deve ser usado como nome principal em toda a documentação atual.
