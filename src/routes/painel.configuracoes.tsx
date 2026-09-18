@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Copy, Link2 } from "lucide-react";
+import { Copy, Link2, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { PainelShell } from "@/components/painel/painel-shell";
@@ -30,9 +30,70 @@ export const Route = createFileRoute("/painel/configuracoes")({
   component: Configuracoes,
 });
 
+type Period = {
+  from: string;
+  to: string;
+};
+
+type DayHours = {
+  day: string;
+  active: boolean;
+  periods: Period[];
+};
+
+const initialHours: DayHours[] = business.hours.map((hours, index) => ({
+  day: hours.day,
+  active: hours.active,
+  periods: hours.active
+    ? index === 0
+      ? [
+          { from: "09:00", to: "12:00" },
+          { from: "13:00", to: "18:00" },
+        ]
+      : [{ from: hours.open, to: hours.close }]
+    : [],
+}));
+
 function Configuracoes() {
-  const [hours, setHours] = useState(business.hours);
+  const [hours, setHours] = useState<DayHours[]>(initialHours);
+  const [tolerance, setTolerance] = useState(String(business.toleranceMin || 15));
   const [copied, setCopied] = useState(false);
+
+  const toleranceNumber = Number(tolerance);
+  const toleranceTooLow = tolerance !== "" && toleranceNumber < 5;
+  const toleranceTooHigh = tolerance !== "" && toleranceNumber > 60;
+
+  const updatePeriod = (dayIndex: number, periodIndex: number, patch: Partial<Period>) =>
+    setHours((current) =>
+      current.map((day, index) =>
+        index === dayIndex
+          ? {
+              ...day,
+              periods: day.periods.map((period, pIndex) =>
+                pIndex === periodIndex ? { ...period, ...patch } : period,
+              ),
+            }
+          : day,
+      ),
+    );
+
+  const addPeriod = (dayIndex: number) =>
+    setHours((current) =>
+      current.map((day, index) =>
+        index === dayIndex
+          ? { ...day, periods: [...day.periods, { from: "13:00", to: "18:00" }] }
+          : day,
+      ),
+    );
+
+  const removePeriod = (dayIndex: number, periodIndex: number) =>
+    setHours((current) =>
+      current.map((day, index) =>
+        index === dayIndex && day.periods.length > 1
+          ? { ...day, periods: day.periods.filter((_, pIndex) => pIndex !== periodIndex) }
+          : day,
+      ),
+    );
 
   return (
     <PainelShell title="Configurações do negócio" subtitle="Dados que aparecem para o seu cliente">
@@ -65,7 +126,9 @@ function Configuracoes() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              {copied ? "Link copiado! (protótipo)" : "Esse é o endereço que você divulga aos clientes."}
+              {copied
+                ? "Link copiado! (protótipo)"
+                : "Esse é o endereço que você divulga aos clientes."}
             </p>
           </div>
         </section>
@@ -82,38 +145,114 @@ function Configuracoes() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="b-tol">Tolerância padrão (minutos)</Label>
-            <Input id="b-tol" type="number" defaultValue={business.toleranceMin} />
+            <Input
+              id="b-tol"
+              type="number"
+              inputMode="numeric"
+              min={5}
+              max={60}
+              step={1}
+              value={tolerance}
+              aria-invalid={toleranceTooLow || toleranceTooHigh}
+              onChange={(event) => setTolerance(event.target.value.replace(/\D/g, ""))}
+            />
+            <p className="text-xs text-muted-foreground">Use um valor entre 5 e 60 minutos.</p>
+            {toleranceTooLow && (
+              <p className="text-xs font-medium text-destructive">
+                A tolerância mínima é de 5 minutos.
+              </p>
+            )}
+            {toleranceTooHigh && (
+              <p className="text-xs font-medium text-destructive">
+                A tolerância máxima é de 60 minutos.
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">
-              Usada no aviso da página pública e no alerta de atraso da agenda.
+              A tolerância afeta apenas avisos e destaque de atraso. O sistema não cancela
+              automaticamente. Você decide se marca como não compareceu.
             </p>
           </div>
         </section>
 
         <section className="surface-card p-5 lg:col-span-2">
           <h2 className="text-base font-bold">Horários de funcionamento</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Pausas como almoço não aparecem para o cliente. Esses horários simplesmente ficam
+            indisponíveis.
+          </p>
           <div className="mt-4 space-y-3">
             {hours.map((h, i) => (
               <div
                 key={h.day}
-                className={cn(
-                  "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-3 sm:flex sm:justify-between",
-                  !h.active && "opacity-60",
-                )}
+                className={cn("rounded-xl border p-4", !h.active && "bg-muted/40 opacity-60")}
               >
-                <div className="flex min-w-0 items-center gap-3">
+                <div className="flex items-center gap-3">
                   <Switch
                     checked={h.active}
                     onCheckedChange={(v) =>
-                      setHours((prev) => prev.map((x, xi) => (xi === i ? { ...x, active: v } : x)))
+                      setHours((current) =>
+                        current.map((day, index) =>
+                          index === i
+                            ? {
+                                ...day,
+                                active: v,
+                                periods:
+                                  v && day.periods.length === 0
+                                    ? [{ from: "09:00", to: "18:00" }]
+                                    : day.periods,
+                              }
+                            : day,
+                        ),
+                      )
                     }
                   />
                   <span className="truncate font-medium">{h.day}</span>
+                  {!h.active && <span className="text-xs text-muted-foreground">Fechado</span>}
                 </div>
-                <div className="col-span-2 flex flex-wrap items-center gap-2 sm:col-auto">
-                  <Input defaultValue={h.open} className="w-24" />
-                  <span className="text-muted-foreground">às</span>
-                  <Input defaultValue={h.close} className="w-24" />
-                </div>
+
+                {h.active && (
+                  <div className="mt-4 space-y-3">
+                    {h.periods.map((period, periodIndex) => (
+                      <div
+                        key={`${h.day}-${periodIndex}`}
+                        className="flex flex-wrap items-center gap-2"
+                      >
+                        <Input
+                          type="time"
+                          step={900}
+                          value={period.from}
+                          onChange={(event) =>
+                            updatePeriod(i, periodIndex, { from: event.target.value })
+                          }
+                          className="w-32"
+                        />
+                        <span className="text-sm text-muted-foreground">às</span>
+                        <Input
+                          type="time"
+                          step={900}
+                          value={period.to}
+                          onChange={(event) =>
+                            updatePeriod(i, periodIndex, { to: event.target.value })
+                          }
+                          className="w-32"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          disabled={h.periods.length === 1}
+                          onClick={() => removePeriod(i, periodIndex)}
+                        >
+                          <Trash2 className="mr-1 size-4" /> Remover período
+                        </Button>
+                      </div>
+                    ))}
+
+                    <Button type="button" variant="outline" size="sm" onClick={() => addPeriod(i)}>
+                      <Plus className="mr-1 size-4" /> Adicionar período
+                    </Button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -123,3 +262,4 @@ function Configuracoes() {
     </PainelShell>
   );
 }
+
