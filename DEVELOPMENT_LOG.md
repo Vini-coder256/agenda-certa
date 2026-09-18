@@ -298,3 +298,25 @@ A migração documental foi incorporada à `main` por fluxo normal, sem reescrev
 - Não houve force push, rebase, amend, squash ou reescrita de histórico.
 - O bloco original do Lovable em `AGENTS.md` permaneceu intacto.
 
+## 2026-09-18 — Snapshot v0.1 do protótipo visual
+
+### Objetivo da sessão
+
+Documentar o estado atual do protótipo visual antes das próximas alterações no Lovable.
+
+### Registro
+
+- Foi criado o arquivo `CURRENT_PROTOTYPE_SNAPSHOT.md`.
+- Versão do snapshot: **v0.1 — Protótipo visual Lovable organizado**.
+- Data do snapshot: **2026-09-18**.
+- O snapshot registra rotas, telas, dados mockados, coerência com a documentação oficial, lacunas, riscos e próximas prioridades.
+- A análise foi feita sobre o repositório `Vini-coder256/agenda-certa`, branch `main`.
+- O estado registrado é de protótipo visual navegável, sem backend real e com dados fictícios/mockados.
+
+### Escopo desta atualização
+
+- Somente documentação Markdown foi criada ou atualizada.
+- Nenhum código funcional do aplicativo foi alterado.
+- Nenhum backend, Supabase ou migration foi criado.
+- Nenhuma rota ou lógica do aplicativo foi modificada.
+
