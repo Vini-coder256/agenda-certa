@@ -13,6 +13,12 @@
 
 # Instruções Para IAs e Agentes de Código — Agenda Certa
 
+## Organização dos repositórios
+
+- Repositório principal atual: `Vini-coder256/agenda-certa`.
+- Backup histórico da documentação: `Vini-coder256/agenda-certa-docs-backup`.
+- Código e documentação permanecem juntos na branch `main` do repositório principal.
+
 O GitHub é a fonte oficial da verdade. Antes de qualquer alteração, ler `PROJECT_CONTEXT.md`, `MVP_SCOPE.md`, `SCREEN_FLOW.md`, `DATABASE_PLAN.md`, este arquivo e `DEVELOPMENT_LOG.md`.
 
 ## 1. Produto
