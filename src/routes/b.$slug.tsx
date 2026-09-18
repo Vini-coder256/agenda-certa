@@ -266,7 +266,9 @@ function PublicBooking() {
                 acompanhar seu atendimento.
               </p>
 
+              <div className="space-y-2">
                 <Label htmlFor="c-nome">Nome completo</Label>
+
                 <Input
                   id="c-nome"
                   placeholder="Seu nome"
