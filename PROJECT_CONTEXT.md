@@ -237,7 +237,7 @@ A tolerância de atraso é configurável por negócio no MVP.
 Regras:
 
 - valor padrão: 15 minutos;
-- valores permitidos: 5, 10, 15, 20 ou 30 minutos;
+- valor inteiro permitido entre 5 e 60 minutos;
 - se o empreendedor não configurar, usar 15 minutos;
 - a configuração fica vinculada ao negócio;
 - a página pública mostra o valor configurado antes da confirmação;

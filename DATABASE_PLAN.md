@@ -1,18 +1,31 @@
-# Plano Inicial do Banco de Dados — Agenda Certa
+# Plano do Banco de Dados — Agenda Certa
 
-Este documento descreve o planejamento dos dados. Não é migration nem implementação de backend.
+Este documento define o modelo de dados e as regras técnicas previstas para a fase de backend. Ele é uma referência de planejamento: não é migration e não significa que Supabase ou backend já estejam configurados.
+
+O plano de execução por fases está em `BACKEND_IMPLEMENTATION_PLAN.md`.
 
 ## 1. Princípios
 
 - O sistema é multiempresa.
-- No MVP, uma conta de empreendedor possui um negócio.
-- A estrutura pode permitir múltiplos negócios futuramente sem expor isso na interface atual.
+- No MVP, uma conta de empreendedor possui exatamente um negócio.
+- A estrutura pode permitir múltiplos negócios no futuro sem expor isso na interface atual.
 - A assinatura está ligada ao negócio e ao dono.
-- Cada empreendedor só acessa os próprios dados.
-- Datas e horários devem respeitar o timezone do negócio, com padrão `America/Sao_Paulo`.
-- Dinheiro deve ser salvo em centavos.
+- Cada empreendedor acessa somente os próprios dados.
+- Datas persistidas usam instante absoluto; cálculos e exibição respeitam o timezone do negócio, com padrão `America/Sao_Paulo`.
+- Dinheiro é salvo em centavos.
+- Dados públicos são expostos pelo menor contrato possível; tabelas privadas não ficam abertas para acesso anônimo.
+- Operações públicas sensíveis são validadas novamente no backend/banco.
 
-## 2. Tabelas planejadas
+## 2. Stack e limites previstos
+
+- Supabase Auth para identidade e sessão do empreendedor.
+- PostgreSQL do Supabase para dados, integridade, transações e índices.
+- RLS para isolamento por negócio.
+- RPCs transacionais para disponibilidade, criação, cancelamento e remarcação públicas.
+- Edge Functions somente quando SQL/RPC não for adequado, por exemplo integrações externas, rate limit adicional ou uso de segredos.
+- Pagamento automático, WhatsApp automático e login de profissional continuam fora do MVP inicial.
+
+## 3. Tabelas planejadas
 
 1. `profiles`
 2. `businesses`
@@ -21,12 +34,14 @@ Este documento descreve o planejamento dos dados. Não é migration nem implemen
 5. `professional_services`
 6. `business_hours`
 7. `appointments`
-8. `blocked_times`
+8. `time_blocks`
 9. `subscriptions`
 
-## 3. `profiles`
+No início do MVP, `timezone` e `late_tolerance_minutes` permanecem em `businesses`. Não criar `business_settings` sem necessidade concreta; essa separação pode ocorrer futuramente se as configurações crescerem.
 
-Dados extras do usuário autenticado:
+## 4. `profiles`
+
+Dados adicionais do usuário autenticado:
 
 ```text
 id
@@ -38,14 +53,16 @@ created_at
 updated_at
 ```
 
+`id` referencia de forma segura o usuário do Supabase Auth.
+
 `role`:
 
 - `entrepreneur`;
 - `admin`.
 
-O perfil deve estar ligado de forma segura ao usuário de autenticação. Um empreendedor comum não pode conceder a si mesmo a função de admin.
+Um empreendedor comum não pode conceder a si mesmo a função de admin.
 
-## 4. `businesses`
+## 5. `businesses`
 
 ```text
 id
@@ -66,21 +83,27 @@ created_at
 updated_at
 ```
 
+`status`:
+
+- `active`;
+- `paused`;
+- `blocked`.
+
 Regras:
 
 - `owner_id` é obrigatório;
-- no MVP, apenas um negócio por empreendedor;
-- `slug` é obrigatório e único, sem conflito por maiúsculas/minúsculas;
+- no MVP, deve existir no máximo um negócio por empreendedor;
+- `slug` é obrigatório e único sem diferenciar maiúsculas e minúsculas;
 - `timezone` padrão: `America/Sao_Paulo`;
-- `late_tolerance_minutes` pertence ao negócio e tem padrão 15;
-- `late_tolerance_minutes` aceita somente 5, 10, 15, 20 ou 30;
-- rota pública: `/b/:slug`.
+- `late_tolerance_minutes` pertence ao negócio, tem padrão 15 e aceita inteiro entre 5 e 60;
+- se não houver valor configurado, usar 15;
+- rota pública padrão: `/b/:slug`.
 
-O status do negócio e o status da assinatura devem ser avaliados antes de aceitar novos agendamentos.
+O status do negócio e o status da assinatura são avaliados antes de aceitar novos agendamentos.
 
-A tolerância serve somente para avisos e destaque de atraso. Ela não altera `duration_minutes`, `start_at`, `end_at` ou o cálculo de disponibilidade. O sistema não cancela o agendamento automaticamente quando a tolerância termina.
+A tolerância serve apenas para avisos e destaque de atraso. Ela não altera `duration_minutes`, `start_at`, `end_at` ou disponibilidade e não cancela agendamentos automaticamente.
 
-## 5. `services`
+## 6. `services`
 
 ```text
 id
@@ -99,9 +122,10 @@ Regras:
 - `price_cents` deve ser positivo;
 - `duration_minutes` deve ser positivo;
 - serviço pertence a um negócio;
-- serviço com histórico é desativado, não apagado.
+- serviço com histórico é desativado, não apagado;
+- serviço inativo não recebe novo agendamento.
 
-## 6. `professionals`
+## 7. `professionals`
 
 ```text
 id
@@ -113,11 +137,14 @@ created_at
 updated_at
 ```
 
-Todo agendamento possui `professional_id`. Profissional com histórico é desativado, não apagado.
+Regras:
 
-No MVP, profissionais seguem os períodos gerais do negócio. Não existem login, permissões, comissão, salário ou repasse.
+- todo agendamento possui `professional_id`;
+- profissional com histórico é desativado, não apagado;
+- no MVP, profissionais seguem os períodos gerais do negócio;
+- profissionais não possuem login, permissões, comissão, salário, repasse ou horário próprio.
 
-## 7. `professional_services`
+## 8. `professional_services`
 
 ```text
 id
@@ -128,13 +155,14 @@ created_at
 
 Regras:
 
-- relação profissional–serviço deve ser única;
-- profissional e serviço devem pertencer ao mesmo negócio;
-- profissional inativo ou serviço inativo não pode receber novo agendamento.
+- a relação profissional–serviço é única;
+- profissional e serviço pertencem ao mesmo negócio;
+- profissional ou serviço inativo não recebe novo agendamento;
+- a consistência de negócio deve ser validada no servidor/banco, não apenas no frontend.
 
-## 8. `business_hours`
+## 9. `business_hours`
 
-Cada linha representa um período de atendimento. Assim, um dia pode possuir mais de uma linha.
+Cada linha representa um período de atendimento. Um dia pode ter mais de uma linha.
 
 ```text
 id
@@ -151,12 +179,13 @@ updated_at
 
 Regras:
 
-- abertura anterior ao fechamento;
-- períodos devem pertencer ao negócio;
+- `opens_at` deve ser anterior a `closes_at`;
+- o período pertence ao negócio;
+- períodos ativos do mesmo dia não devem se sobrepor;
 - intervalos como almoço ficam fora dos períodos cadastrados;
-- períodos não aparecem ao cliente, apenas os horários disponíveis.
+- períodos não aparecem ao cliente; somente horários disponíveis são exibidos.
 
-## 9. `appointments`
+## 10. `appointments`
 
 ```text
 id
@@ -172,7 +201,7 @@ source
 status
 notes
 manage_code
-manage_token
+manage_token_hash
 cancelled_at
 rescheduled_from_appointment_id
 created_at
@@ -194,21 +223,23 @@ updated_at
 Regras:
 
 - negócio, serviço e profissional são obrigatórios;
-- serviço e profissional devem pertencer ao mesmo negócio;
-- profissional deve realizar o serviço;
+- serviço e profissional pertencem ao mesmo negócio;
+- o profissional realiza o serviço;
 - preço e duração vêm do serviço, nunca de valores livres enviados pelo cliente;
-- salvar o preço no agendamento preserva o histórico;
-- `end_at` deve ser posterior a `start_at` e corresponder à duração validada;
-- status inicial do agendamento público é definido pelo sistema;
-- `manage_code` deve ser único ou suficientemente protegido contra colisão;
-- `manage_token` deve ser técnico, seguro e nunca exibido como “token” ao cliente;
-- `cancelled_at` registra o cancelamento quando aplicável;
-- `rescheduled_from_appointment_id` pode ligar o novo agendamento ao antigo;
-- agendamentos cancelados não bloqueiam horários.
+- o preço é copiado para o agendamento para preservar histórico;
+- `end_at` é posterior a `start_at` e corresponde à duração validada;
+- o status inicial do agendamento público é `scheduled` e é definido pelo sistema;
+- `manage_code` é único ou possui proteção suficiente contra colisão;
+- o token técnico é aleatório e seguro; somente seu hash fica em `manage_token_hash`;
+- o token bruto pode ser devolvido uma única vez na criação do link e nunca é exibido com a palavra “token” ao cliente;
+- `cancelled_at` registra o cancelamento;
+- `rescheduled_from_appointment_id` liga o novo agendamento ao antigo quando houver remarcação;
+- `cancelled` não bloqueia horário nem entra nos ganhos;
+- registros históricos não são apagados.
 
-O código pode ter formato amigável como `AC-4827`, sem depender disso como única proteção do link seguro.
+O código pode ter formato amigável como `AC-4827`, mas não é a única proteção do link seguro.
 
-## 10. `blocked_times`
+## 11. `time_blocks`
 
 ```text
 id
@@ -217,20 +248,23 @@ professional_id
 start_at
 end_at
 reason
+created_by
 created_at
 updated_at
 ```
 
-`professional_id` vazio indica bloqueio geral. Preenchido indica bloqueio de um profissional.
+`professional_id` vazio indica bloqueio geral do negócio. Preenchido indica bloqueio de um profissional.
 
 Regras:
 
-- fim posterior ao início;
-- profissional, quando informado, pertence ao negócio;
+- `end_at` é posterior a `start_at`;
+- o profissional, quando informado, pertence ao negócio;
 - bloqueio impede novos agendamentos sobrepostos;
-- bloqueios não aparecem na página pública.
+- bloqueios não aparecem na página pública;
+- a criação de bloqueio deve verificar conflitos de forma transacional;
+- um bloqueio geral é comparado com todos os profissionais do negócio; um bloqueio específico, somente com o profissional correspondente.
 
-## 11. `subscriptions`
+## 12. `subscriptions`
 
 ```text
 id
@@ -248,7 +282,7 @@ created_at
 updated_at
 ```
 
-Status:
+`status`:
 
 - `trial`;
 - `active`;
@@ -260,97 +294,204 @@ Status:
 Regras:
 
 - assinatura ligada ao negócio e ao dono;
-- teste de 15 dias começa na criação da conta/negócio;
-- pagamento pode ser manual;
-- sem `trial` válido ou `active`, bloquear novos agendamentos online e manuais;
-- manter painel, histórico e ações sobre agendamentos existentes.
+- teste grátis de 15 dias começa na criação da conta/negócio;
+- pagamento pode ser manual no MVP;
+- somente `trial` válido ou `active` aceita novos agendamentos online e manuais;
+- o empreendedor mantém acesso ao painel, histórico e ações em agendamentos existentes quando não pode criar novos;
+- ativação manual deve ser restrita ao admin.
 
-## 12. Regra de disponibilidade
+## 13. Disponibilidade real
 
-Horários candidatos são gerados a cada 15 minutos e podem chegar até 30 dias no futuro.
+Horários candidatos são gerados em intervalos de 15 minutos, com limite de 30 dias no futuro e intervalo automático de 0 minutos entre atendimentos.
 
-Antes de criar um agendamento, validar no servidor/banco:
+A operação de disponibilidade recebe, no mínimo:
 
-1. negócio existente e apto a receber agendamentos;
-2. teste válido ou assinatura ativa;
-3. serviço ativo e pertencente ao negócio;
-4. profissional ativo, pertencente ao negócio e vinculado ao serviço;
-5. período de atendimento do dia;
-6. término do serviço dentro do período;
-7. timezone do negócio;
-8. antecedência mínima de 1 hora no mesmo dia;
-9. agendamentos online e manuais sobrepostos;
-10. bloqueios gerais e do profissional;
-11. status dos agendamentos existentes.
+- slug ou `business_id`;
+- `service_id`;
+- `professional_id`, quando já escolhido;
+- data local pretendida;
+- timezone do negócio.
 
-Intervalo automático entre atendimentos: 0 minutos no MVP.
+Ela valida:
 
-## 13. Proteção contra sobreposição
+1. negócio existente;
+2. negócio `active`;
+3. teste válido ou assinatura `active`;
+4. serviço ativo e pertencente ao negócio;
+5. profissional ativo, pertencente ao negócio e vinculado ao serviço;
+6. período de atendimento aplicável;
+7. término do serviço dentro do mesmo período;
+8. timezone do negócio;
+9. antecedência mínima de 1 hora no mesmo dia;
+10. limite de 30 dias;
+11. agendamentos `scheduled`, `completed` e `no_show` sobrepostos;
+12. bloqueios gerais e do profissional.
 
-Verificação no front-end não é suficiente. Dois clientes podem tentar marcar o mesmo profissional no mesmo intervalo.
+Um horário só é retornado se todo o intervalo `[start_at, end_at)` estiver livre. Agendamentos `cancelled` não bloqueiam.
 
-A implementação futura deve usar validação atômica no servidor/banco e restrições ou mecanismo transacional equivalente para impedir sobreposição. A disponibilidade deve ser validada novamente no momento de salvar.
+A listagem de disponibilidade é informativa. A mesma validação é repetida atomicamente na criação.
 
-Um agendamento `cancelled` não participa do bloqueio. Os demais registros históricos não devem ser apagados.
+## 14. Proteção contra sobreposição e concorrência
 
-## 14. Cancelamento e remarcação
+A verificação no frontend não é suficiente. Dois clientes podem tentar reservar o mesmo profissional no mesmo intervalo.
 
-Cancelamento e remarcação pelo cliente exigem código e/ou link seguro e só são permitidos até 1 hora antes.
+Estratégia prevista:
 
-Remarcação deve:
+- usar intervalos semifechados `[start_at, end_at)`;
+- habilitar `btree_gist` quando a implementação for autorizada;
+- criar uma restrição de exclusão GiST em `appointments` por `professional_id` e intervalo de tempo, aplicável a registros cujo status não seja `cancelled`;
+- executar a criação pública em uma RPC transacional que recalcule preço, duração, disponibilidade, assinatura e bloqueios;
+- serializar operações concorrentes relevantes com lock transacional/advisory por negócio/profissional;
+- usar o mesmo protocolo de lock ao criar `time_blocks`, pois uma restrição isolada em `appointments` não impede corrida entre tabelas;
+- converter conflito de concorrência em resposta estável de “horário indisponível”, sem expor erro interno.
 
-1. validar o novo horário;
-2. cancelar o antigo;
-3. criar o novo;
-4. registrar a relação quando possível.
+A restrição de exclusão protege conflitos entre agendamentos do mesmo profissional. A RPC e o lock compartilhado protegem também conflitos entre agendamentos e bloqueios gerais/específicos.
 
-Essas etapas devem ser protegidas contra falha parcial na implementação futura.
+## 15. Criação pública segura
 
-## 15. Ganhos
+O frontend público não insere diretamente em `appointments`.
+
+Uma RPC, por exemplo `create_public_appointment`, deve:
+
+1. localizar o negócio pelo slug;
+2. validar estado do negócio e assinatura/teste;
+3. validar serviço, profissional e vínculo;
+4. ler preço e duração no banco;
+5. validar nome e telefone;
+6. calcular `start_at` e `end_at` no timezone correto;
+7. validar período, antecedência, limite futuro, agendamentos e bloqueios;
+8. obter o lock transacional;
+9. repetir as verificações críticas;
+10. criar com `source = online` e `status = scheduled`;
+11. gerar `manage_code` e token seguro;
+12. salvar somente o hash do token;
+13. devolver apenas os dados necessários à confirmação.
+
+O cliente nunca escolhe livremente preço, duração, status, `business_id` ou relacionamentos internos.
+
+## 16. Cancelamento, remarcação e gerenciamento
+
+O acesso público usa código acompanhado de WhatsApp e/ou link seguro. A palavra “token” não aparece na interface.
+
+Cancelamento e remarcação online são permitidos somente até 1 hora antes do início no timezone do negócio.
+
+Remarcação deve ocorrer em uma operação transacional:
+
+1. autenticar o acesso ao agendamento;
+2. validar a janela mínima;
+3. validar o novo horário;
+4. obter locks necessários;
+5. cancelar o antigo e preencher `cancelled_at`;
+6. criar o novo;
+7. registrar `rescheduled_from_appointment_id`;
+8. confirmar a transação inteira ou não alterar nada.
+
+## 17. Estados da página pública vindos do backend
+
+O backend deve distinguir estados sem expor dados privados:
+
+- `business_not_found`;
+- `business_paused`;
+- `business_blocked`;
+- `trial_expired` ou assinatura inapta;
+- `no_active_services`;
+- `no_active_professionals`;
+- `no_availability`;
+- `management_code_invalid`;
+- `management_link_invalid_or_expired`;
+- `management_window_closed`.
+
+A UI traduz esses códigos para as mensagens oficiais. Esses estados não devem continuar baseados em mocks quando a rota for migrada.
+
+## 18. Ganhos
 
 Para o período escolhido:
 
-- previsto: soma de `scheduled` + `completed`;
-- real: soma de `completed`;
+- ganho previsto: soma de `scheduled` + `completed`;
+- ganho real: soma de `completed`;
 - perda por falta: soma de `no_show`;
 - `cancelled` não entra.
 
-Um agendamento passado ainda conta no previsto enquanto estiver `scheduled`.
+Um agendamento passado continua no previsto enquanto estiver `scheduled`.
 
-## 16. Restrições e índices mínimos planejados
+## 19. Restrições e índices mínimos
 
-- chaves estrangeiras entre todas as entidades relacionadas;
-- slug único;
-- preços e durações positivos;
-- datas válidas;
-- valores permitidos para `role`, `status` e `source`;
+Restrições:
+
+- foreign keys entre entidades relacionadas;
+- unicidade de `businesses.owner_id` no MVP;
+- slug único sem diferenciar maiúsculas e minúsculas;
+- `late_tolerance_minutes BETWEEN 5 AND 60`;
+- preço e duração positivos;
+- `end_at > start_at` em agendamentos e bloqueios;
+- valores padronizados para roles, estados, status e source;
 - relação profissional–serviço sem duplicidade;
-- índices por negócio, profissional, início, status, slug e código de gerenciamento;
-- regras de exclusão que preservem histórico;
-- garantia de que entidades relacionadas pertencem ao mesmo negócio;
-- proteção futura contra sobreposição.
+- serviço, profissional, vínculo e agendamento sempre consistentes com o mesmo negócio;
+- relação de remarcação sem autorreferência inválida;
+- proteção contra sobreposição de agendamentos ativos.
 
-## 17. Segurança e RLS
+Índices:
 
-No Supabase futuro, RLS deverá garantir:
+- negócio por `owner_id`;
+- negócio por slug normalizado;
+- serviços e profissionais por `business_id, is_active`;
+- períodos por `business_id, weekday`;
+- agendamentos por negócio/início, profissional/início, status e `manage_code`;
+- hash de gerenciamento quando a busca exigir;
+- bloqueios por negócio/início e profissional/início;
+- assinatura por negócio e status.
 
-- empreendedor acessa somente seu negócio;
-- cliente anônimo lê apenas dados públicos necessários;
-- cliente não lê agenda completa, nomes ou telefones de terceiros;
-- criação pública passa por uma operação segura e validada;
-- código e link de gerenciamento dão acesso somente ao agendamento correspondente;
-- admin usa autorização protegida;
-- cliente não define preço, duração ou status.
+## 20. RLS e autorização
 
-As políticas exatas devem ser revisadas antes de conectar o Supabase.
+### Empreendedor autenticado
 
-## 18. Privacidade e anti-spam
+- lê e altera somente o perfil permitido e o próprio negócio;
+- acessa somente serviços, profissionais, períodos, bloqueios, agendamentos e assinatura ligados ao próprio negócio;
+- não altera role para admin;
+- não ativa assinatura por conta própria;
+- não lê dados de outros negócios.
 
-Nome e WhatsApp são dados pessoais. Devem ser privados e visíveis somente ao dono do negócio e a acessos administrativos autorizados.
+### Cliente anônimo
 
-No MVP, exigir nome, WhatsApp e validação básica do telefone. Rate limit, captcha, verificação de telefone e bloqueio avançado de abuso ficam para evolução.
+- não recebe acesso amplo direto às tabelas;
+- lê somente projeções públicas mínimas por RPC ou view segura;
+- não lê nomes, telefones, notas, agenda completa, hashes ou dados de terceiros;
+- cria, cancela e remarca somente por operações seguras e validadas;
+- não define preço, duração, status ou relacionamentos internos.
 
-## 19. Demonstração
+### Admin
 
-Dados da Barbearia do Zé são fictícios e devem permanecer separados dos dados reais.
+- usa autorização explícita e protegida;
+- pode consultar contas e negócios e alterar estados administrativos mínimos;
+- não deve depender apenas de uma flag enviada pelo cliente.
 
+A service role nunca é enviada ao frontend. Funções `security definer`, se usadas, precisam de `search_path` fixo, validações explícitas e privilégios mínimos.
+
+## 21. Privacidade e anti-spam
+
+Nome e WhatsApp são dados pessoais e ficam visíveis somente ao dono do negócio e a acessos administrativos autorizados.
+
+No MVP:
+
+- nome obrigatório;
+- WhatsApp obrigatório;
+- validação básica de formato;
+- mensagens de erro sem revelar existência de outros agendamentos.
+
+Rate limit, captcha, verificação de telefone e bloqueio avançado de abuso são evoluções planejadas. A criação pública já deve ser desenhada para permitir rate limit futuro.
+
+## 22. Timezone e datas
+
+- O negócio guarda um timezone IANA, padrão `America/Sao_Paulo`.
+- O backend interpreta a seleção local usando esse timezone.
+- Instantes são persistidos de forma inequívoca, preferencialmente `timestamptz`.
+- Regras de antecedência, cancelamento e mudança de dia são calculadas no timezone do negócio.
+- O frontend não é fonte de verdade para conversão ou validação de horário.
+
+## 23. Demonstração
+
+Dados da Barbearia do Zé são fictícios. Não devem ser migrados silenciosamente para produção nem misturados a dados reais.
+
+## 24. Próxima etapa
+
+Depois da aprovação deste plano, a primeira implementação deve ocorrer em uma branch curta, sugerida como `backend/supabase-foundation`, seguindo a Fase 1 de `BACKEND_IMPLEMENTATION_PLAN.md`. Nenhuma migration de produto deve ser criada antes da confirmação do ambiente, estratégia de segredos e revisão do modelo.

@@ -374,3 +374,38 @@ A ausência de persistência é esperada nesta fase. Alterações visuais podem 
 - Nenhum código TypeScript ou React foi alterado.
 - Nenhum backend, Supabase, autenticação, migration ou pagamento foi criado.
 
+## 2026-09-22 — Planejamento oficial da fase de backend
+
+### Objetivo da sessão
+
+Planejar, antes de qualquer implementação, a transformação do protótipo visual v0.2 em um MVP funcional com autenticação, persistência, isolamento por negócio e operações públicas seguras.
+
+### Decisões documentadas
+
+- O backend previsto usa Supabase Auth, PostgreSQL, RLS e RPCs transacionais.
+- Edge Functions ficam reservadas para necessidades que não devam ficar em SQL/RPC, como integrações externas, rate limit adicional ou uso de segredos.
+- Foi criado `BACKEND_IMPLEMENTATION_PLAN.md` com arquitetura, segurança, estratégia Git, testes e dez fases de implementação.
+- `DATABASE_PLAN.md` foi atualizado com o modelo planejado, `time_blocks`, hash do token de gerenciamento, regras de RLS, disponibilidade real e proteção contra sobreposição.
+- A tolerância vinculada ao negócio foi alinhada ao protótipo atual: padrão de 15 minutos e valor inteiro entre 5 e 60.
+- Configurações simples, como timezone e tolerância, permanecem inicialmente em `businesses`; uma tabela `business_settings` só deverá ser criada se houver necessidade concreta.
+- A criação pública não fará inserção direta irrestrita. Preço, duração, status, vínculos, assinatura, bloqueios e disponibilidade serão recalculados no backend.
+- A prevenção de reservas simultâneas combinará transação, lock compartilhado e restrição de exclusão no banco.
+- Os estados especiais da página pública deverão vir de dados e códigos reais do backend quando a rota for migrada, não de mocks.
+- O primeiro trabalho sugerido de implementação é uma branch curta chamada `backend/supabase-foundation`, mantendo a `main` estável.
+
+### Decisão sobre Lovable
+
+Não gastar créditos do Lovable com estados cuja fonte correta depende do backend. O Lovable pode continuar apoiando o protótipo visual, mas autenticação, persistência, disponibilidade, RLS e estados públicos reais devem seguir o plano técnico do repositório.
+
+### Escopo desta atualização
+
+- Somente documentação Markdown foi criada ou atualizada.
+- Nenhum código TypeScript ou React foi alterado.
+- Nenhum projeto Supabase foi conectado.
+- Nenhum backend, migration, autenticação, pagamento ou dependência foi criado.
+- Nenhuma configuração do Lovable foi alterada.
+
+### Próximo passo recomendado
+
+Confirmar ambiente Supabase, estratégia de segredos, uso de SSR e mecanismo de concorrência. Depois, criar `backend/supabase-foundation` e executar somente a Fase 1 do plano em uma tarefa separada.
+
