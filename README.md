@@ -46,6 +46,8 @@ A branch `main` é a versão principal do projeto e deve manter código e docume
 - `MVP_SCOPE.md`: escopo da primeira versão;
 - `SCREEN_FLOW.md`: telas, rotas e estados;
 - `DATABASE_PLAN.md`: planejamento dos dados e restrições;
+- `BACKEND_IMPLEMENTATION_PLAN.md`: fases previstas para implementar o backend;
+- `CURRENT_PROTOTYPE_SNAPSHOT.md`: estado observado do protótipo visual;
 - `AGENTS.md`: instruções do Lovable e regras oficiais para agentes;
 - `LOVABLE_NEXT_PROMPT.md`: próximos passos sugeridos para o protótipo;
 - `DEVELOPMENT_LOG.md`: histórico de decisões e avanços.
@@ -63,13 +65,21 @@ Continue o desenvolvimento no [editor do Lovable](https://lovable.dev/projects/1
 
 ## Desenvolvimento local
 
-Para trabalhar localmente, é necessário Node.js e npm.
+O repositório usa Bun e mantém somente o lockfile `bun.lock`. Com Bun instalado:
 
 ```sh
 git clone <this-repository-url>
 cd agenda-certa
-npm i
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ```
 
 Antes de alterar o projeto, leia `AGENTS.md` e os documentos oficiais.
+
+## Fundação Supabase (Fase 1)
+
+Os utilitários em `src/lib/supabase/` estão preparados, mas nenhuma tela os utiliza. Sem configuração, as funções retornam `null` e o protótipo continua usando os dados de demonstração.
+
+Quando houver um projeto Supabase autorizado, copie `.env.example` para `.env.local` e preencha apenas a URL do projeto e a chave **publishable**. As variáveis `VITE_*` ficam disponíveis no navegador; nunca coloque nelas secret key, service role ou outros segredos. Não faça commit de `.env.local`.
+
+A criação do projeto, autenticação, tabelas, RLS e persistência pertencem às próximas fases de `BACKEND_IMPLEMENTATION_PLAN.md`.

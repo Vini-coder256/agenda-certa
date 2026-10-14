@@ -409,3 +409,41 @@ Não gastar créditos do Lovable com estados cuja fonte correta depende do backe
 
 Confirmar ambiente Supabase, estratégia de segredos, uso de SSR e mecanismo de concorrência. Depois, criar `backend/supabase-foundation` e executar somente a Fase 1 do plano em uma tarefa separada.
 
+## 2026-10-14 — Fase 1: preparação da fundação Supabase
+
+### Escopo e branch
+
+- A `main` foi confirmada no commit `7a22664080328b45302afe8d0f255e9b337a0d10`.
+- A branch `backend/supabase-foundation` foi criada a partir desse commit para esta preparação.
+- A opção escolhida foi preparar o código sem criar projeto Supabase ou configurar credenciais reais.
+- Nenhuma tela passou a usar Supabase. O protótipo v0.2 segue com mocks e estado local.
+
+### Arquivos e decisões
+
+- `@supabase/supabase-js` e `@supabase/ssr` foram adicionados ao `package.json` e ao lockfile existente `bun.lock`; não foi criado outro lockfile no GitHub.
+- `src/lib/supabase/browser.ts` e `server.ts` oferecem fábricas separadas e tardias para navegador e servidor. As funções retornam `null` se a URL ou a chave publishable estiverem ausentes; não criam cliente durante a importação.
+- O cliente servidor foi preparado para cookies por requisição no TanStack Start. Sessões e autenticação real ficam para fase posterior.
+- `.env.example` foi criado com dois campos públicos vazios; `.gitignore` passou a ignorar arquivos `.env*`, preservando o exemplo.
+- O README passou a explicar o lockfile Bun e a configuração futura com URL e chave publishable.
+
+### Validação local
+
+- Build Vite/TanStack Start: passou sem variáveis Supabase, gerando cliente, SSR e saída Nitro.
+- Importação sem configuração: as duas fábricas retornaram `null` em execução isolada.
+- TypeScript isolado nos novos módulos: passou.
+- TypeScript global: ainda falha com 230 erros em arquivos existentes; a contagem é a mesma com os módulos novos excluídos.
+- Lint dos dois módulos novos: passou.
+- Lint global: ainda falha em arquivos anteriores fora desta fase.
+- O lockfile foi validado sintaticamente e por `bun install --frozen-lockfile --lockfile-only`. O sandbox Windows desta sessão não permitiu uma instalação completa pelo Bun; repetir `bun install --frozen-lockfile` em um ambiente normal antes do merge.
+
+### Limites desta fase
+
+- Nenhum projeto, banco, tabela, migration, RLS, login real, Edge Function, RPC ou pagamento foi criado.
+- Nenhuma credencial, secret key, service role ou token real foi adicionado.
+- Nenhuma página, fluxo visual, mock, aparência ou configuração do Lovable foi alterada.
+- A `main` não foi mesclada com esta branch.
+
+### Próximo passo
+
+Revisar a PR da fundação e validar a instalação completa pelo Bun. Depois, em tarefa separada, criar o projeto Supabase de desenvolvimento e definir variáveis de ambiente seguras antes de iniciar migrations e RLS.
+
