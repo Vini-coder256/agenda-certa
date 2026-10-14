@@ -6,6 +6,24 @@ O Agenda Certa é um projeto de Micro SaaS para pequenos negócios e profissiona
 
 > **Estado atual:** protótipo visual navegável (snapshot v0.2). Os fluxos usam dados fictícios e estado local; ainda não há autenticação, banco, Supabase conectado, agendamentos persistidos ou pagamentos reais.
 
+## Demonstração do protótipo
+
+> **Nota:** As imagens apresentam o protótipo visual do Agenda Certa. Todos os dados exibidos são fictícios e utilizados exclusivamente para demonstração das funcionalidades planejadas. O sistema ainda está em desenvolvimento.
+
+As capturas abaixo são telas reais do protótipo, não imagens geradas. Nomes de clientes, estabelecimentos e profissionais, agendamentos, valores financeiros e indicadores são meramente ilustrativos: não representam operações reais. Não há banco de dados funcional nem agendamentos persistidos.
+
+![Landing page do protótipo Agenda Certa](docs/images/agenda-certa-landing.png)
+
+*Landing page: apresentação do produto e acesso às demonstrações.*
+
+![Escolha de serviços na página pública do protótipo](docs/images/agenda-certa-agendamento-cliente.png)
+
+*Página do cliente: etapas do agendamento e serviços de um negócio fictício. O cabeçalho com contato foi removido da captura.*
+
+![Dashboard demonstrativo do empreendedor](docs/images/agenda-certa-painel-empreendedor.png)
+
+*Painel do empreendedor: resumo e indicadores fictícios, sem backend funcional.*
+
 ## O que é possível explorar
 
 | Jornada | O que o protótipo mostra |
