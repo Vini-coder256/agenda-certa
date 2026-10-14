@@ -1,75 +1,80 @@
 # Agenda Certa
 
-Micro SaaS de agendamentos para microempreendedores e pequenos negócios que trabalham com horário marcado.
+**Uma agenda online por link próprio para quem trabalha com horário marcado.**
 
-## Objetivo
+O Agenda Certa é um projeto de Micro SaaS para pequenos negócios e profissionais de serviços — como barbearias, salões, manicures e estúdios de estética. A proposta é substituir a organização dispersa de horários por uma página de agendamento de cada negócio e um painel simples para acompanhar atendimentos. **Não é um marketplace.**
 
-O Agenda Certa permite que cada empreendedor configure seu negócio, serviços, profissionais e períodos de atendimento e divulgue um link público próprio para receber agendamentos.
+> **Estado atual:** protótipo visual navegável (snapshot v0.2). Os fluxos usam dados fictícios e estado local; ainda não há autenticação, banco, Supabase conectado, agendamentos persistidos ou pagamentos reais.
 
-O produto não é marketplace. Cada negócio possui sua própria página pública.
+## O que é possível explorar
 
-## Sobre este repositório
+| Jornada | O que o protótipo mostra |
+| --- | --- |
+| Empreendedor | Landing page, cadastro e login **simulados**, onboarding em seis etapas e painel com resumo do dia. |
+| Operação | Agenda com filtros, ações de status, edição básica e bloqueios visuais; serviços e profissionais ativos/inativos; horários com múltiplos períodos por dia. |
+| Cliente | Página pública própria em `/b/:slug`, escolha de serviço, profissional quando necessário, data e horário, confirmação e gerenciamento visual por código. |
+| Configurações | Tolerância de atraso entre 5 e 60 minutos, períodos de atendimento e dias fechados, ainda sem gravação no servidor. |
 
-Este é o repositório principal atual do projeto, `Vini-coder256/agenda-certa`, e contém:
+A **Barbearia do Zé** é apenas um cenário fictício para demonstrar as telas. O código gerado na confirmação não é recuperado pela busca de agendamentos: essa busca apresenta um exemplo fixo. A disponibilidade, o cancelamento e a remarcação ainda não aplicam regras reais no servidor.
 
-- o protótipo visual e o código gerado/sincronizado pelo Lovable;
-- a documentação oficial do produto Agenda Certa;
-- o histórico do antigo repositório documental, agora preservado em `Vini-coder256/agenda-certa-docs-backup`;
-- dados fictícios usados para validar fluxos e telas.
+## Tecnologias e ferramentas
 
-A branch `main` é a versão principal do projeto e deve manter código e documentação juntos. Branches de trabalho podem ser usadas como etapa segura, sem reescrever o histórico publicado.
+- **Aplicação:** React 19, TypeScript, TanStack Start/Router, Vite 8 e Tailwind CSS 4.
+- **Interface:** componentes Radix UI, ícones Lucide e estilos responsivos. Há JavaScript na configuração de ferramentas; a aplicação é majoritariamente TypeScript/TSX.
+- **Fluxo de desenvolvimento:** Lovable para o protótipo visual, GitHub para versionamento e Codex para implementação, revisão e documentação.
 
-## Estado atual
+**Planejado, não disponível na `main`:** Supabase, PostgreSQL, autenticação real, regras de acesso (RLS) e persistência. A preparação inicial da integração está em uma [PR draft separada](https://github.com/Vini-coder256/agenda-certa/pull/2), ainda não integrada.
 
-- O protótipo visual é navegável.
-- A Barbearia do Zé é apenas uma demonstração fictícia.
-- Ainda não existe backend real.
-- O Supabase ainda não está conectado.
-- Agendamentos e buscas usam dados fictícios.
-- Pagamentos e integrações externas ainda não foram implementados.
+## Como o projeto está organizado
 
-## Funcionalidades representadas no protótipo
-
-- landing page, cadastro e login;
-- onboarding do negócio;
-- serviços e profissionais;
-- múltiplos períodos de atendimento;
-- página pública do cliente;
-- confirmação e gerenciamento de agendamento;
-- cancelamento e remarcação;
-- painel do empreendedor;
-- teste grátis e assinatura em modo visual.
-
-## Documentação principal
-
-- `PROJECT_CONTEXT.md`: contexto e decisões oficiais;
-- `MVP_SCOPE.md`: escopo da primeira versão;
-- `SCREEN_FLOW.md`: telas, rotas e estados;
-- `DATABASE_PLAN.md`: planejamento dos dados e restrições;
-- `AGENTS.md`: instruções do Lovable e regras oficiais para agentes;
-- `LOVABLE_NEXT_PROMPT.md`: próximos passos sugeridos para o protótipo;
-- `DEVELOPMENT_LOG.md`: histórico de decisões e avanços.
-
-## Integração com Lovable
-
-Este projeto foi construído com [Lovable](https://lovable.dev).
-
-Continue o desenvolvimento no [editor do Lovable](https://lovable.dev/projects/1361dbac-cdf6-4474-8840-7060087e6ef5).
-
-- Alterações feitas no Lovable são commitadas neste repositório.
-- Commits enviados à branch conectada aparecem no editor do Lovable.
-- Não faça force push nem reescreva commits já publicados.
-- Mantenha a branch conectada em estado funcional.
-
-## Desenvolvimento local
-
-Para trabalhar localmente, é necessário Node.js e npm.
-
-```sh
-git clone <this-repository-url>
-cd agenda-certa
-npm i
-npm run dev
+```text
+src/routes/       telas e rotas do aplicativo
+src/components/   componentes reutilizáveis da interface
+src/lib/          dados de demonstração e utilitários do protótipo
+public/           arquivos estáticos
+*.md              decisões de produto, escopo, fluxos e planos técnicos
 ```
 
-Antes de alterar o projeto, leia `AGENTS.md` e os documentos oficiais.
+TanStack Start estrutura as rotas e a renderização da aplicação. Isso **não** significa que já exista um backend de negócio: hoje as telas usam principalmente mocks e `useState`. O onboarding guarda parte da configuração em `localStorage`, somente no navegador e sem sincronização entre contas ou telas.
+
+## Executar localmente
+
+Pré-requisitos: Git e [Bun](https://bun.sh/) instalados. O repositório usa `bun.lock`.
+
+```sh
+git clone https://github.com/Vini-coder256/agenda-certa.git
+cd agenda-certa
+bun install --frozen-lockfile
+bun run dev
+```
+
+Abra o endereço exibido no terminal. Na landing page, use **Ver demonstração do cliente** ou **Ver demonstração do empreendedor**. Não informe dados reais no protótipo: formulários e agendamentos são demonstrações, sem conta ou armazenamento seguro.
+
+Para conferir a versão de produção localmente, use `bun run build`. Nenhuma credencial de Supabase é necessária para executar a `main`.
+
+## Próximas etapas
+
+1. Revisar e integrar, quando aprovada, a fundação Supabase da PR draft.
+2. Implementar banco, autenticação do empreendedor e isolamento de dados com RLS.
+3. Substituir mocks por agendamentos persistidos e disponibilidade calculada no servidor, protegendo contra reservas simultâneas.
+4. Completar gerenciamento do cliente, estados especiais da página pública e painel administrativo mínimo.
+5. Implementar assinatura e pagamento apenas em uma etapa posterior, conforme o escopo do produto.
+
+Este roadmap descreve intenção, não funcionalidades já entregues. O [plano de implementação](BACKEND_IMPLEMENTATION_PLAN.md) detalha fases e limites.
+
+## Documentação
+
+| Documento | Conteúdo |
+| --- | --- |
+| [Estado atual do protótipo](CURRENT_PROTOTYPE_SNAPSHOT.md) | O que funciona visualmente, mocks e limitações observadas no snapshot v0.2. |
+| [Contexto do projeto](PROJECT_CONTEXT.md) e [escopo do MVP](MVP_SCOPE.md) | Problema, público, regras oficiais e primeira versão funcional pretendida. |
+| [Fluxo de telas](SCREEN_FLOW.md) | Jornadas do empreendedor e do cliente e estados de interface. |
+| [Plano de backend](BACKEND_IMPLEMENTATION_PLAN.md) e [plano de dados](DATABASE_PLAN.md) | Arquitetura e segurança **planejadas**, ainda não implementadas. |
+| [Registro de desenvolvimento](DEVELOPMENT_LOG.md) | Evolução das decisões e do protótipo. |
+| [Orientações para agentes](AGENTS.md) | Instruções do projeto e integração com Lovable. |
+
+A `main` é a referência principal de código e documentação. O projeto mantém o histórico de desenvolvimento e o sincronismo com Lovable; não reescreva commits já publicados.
+
+---
+
+**Projeto de portfólio em evolução.** O foco atual é validar a experiência de agendamento e construir a base técnica com segurança, sem apresentar o protótipo como produto pronto para produção.
